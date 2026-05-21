@@ -89,6 +89,12 @@ bash scripts/package-skill.sh
 - If `python3 scripts/build.py --verify` fails only because the host Python lacks PPTX fallback dependencies such as `python-pptx`, verify `slides` and `slides-en` from a temporary venv instead of treating the environment miss as a source regression.
 - Do not commit one-off review reports or diagnostic snapshots as durable docs. Extract stable rules into `AGENTS.md`, `CLAUDE.md`, `SKILL.md`, or `references/` and discard the stale report.
 
+## CI And Verification Discipline
+
+- Tests that need `weasyprint` / `pypdf` / `PyMuPDF` must run in a CI job that installs those deps (currently `verify-render`). The `lint-and-test` job ships only Pygments, so a `find_spec(...) is not None` skip-guard there silently skips the test while still printing `OK:`. A green `lint-and-test` does not mean the solver / render tests ran.
+- Edits to `.github/workflows/*.yml` should be validated on a feature branch (push, watch the run go green) before merging to `main`. Local font / dependency / runner assumptions diverge from CI more often than expected: this project has already burned commits on `pip` cache requiring a manifest, the `fallback_present` set missing Ubuntu defaults (DejaVu / Liberation), and CI never having commercial fonts (Charter / TsangerJinKai02).
+- Differences between CI and host behavior are expressed as a single explicit opt-in env var (`KAMI_ALLOW_FALLBACK_ONLY=1` for missing primary fonts). When a third such flag is needed, migrate to `references/verify_profile.json` or a `--ci-mode` CLI flag instead of letting `KAMI_*` env vars sprawl.
+
 ## Current Risk Areas
 
 - WeasyPrint rendering is sensitive to font availability, solid hex tag backgrounds, page breaks, CJK fallback, and synthetic bold. Verify visually for template changes.
