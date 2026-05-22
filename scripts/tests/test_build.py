@@ -43,6 +43,7 @@ from shared import (  # noqa: E402
     screen_targets,
     stabilize_targets,
 )
+import highlight as highlight_mod  # noqa: E402
 from highlight import highlight_code_blocks  # noqa: E402
 from stabilize import (  # noqa: E402
     blend_rgba_on_parchment,
@@ -704,6 +705,7 @@ def test_highlight_without_language() -> None:
 def test_highlight_without_pygments_dependency() -> None:
     html = '<pre><code class="language-python">def foo():\n    pass</code></pre>'
     original_import = builtins.__import__
+    original_warned = highlight_mod._WARNED_MISSING_PYGMENTS
 
     def fake_import(name, *args, **kwargs):
         if name == "pygments" or name.startswith("pygments."):
@@ -711,14 +713,21 @@ def test_highlight_without_pygments_dependency() -> None:
         return original_import(name, *args, **kwargs)
 
     try:
+        highlight_mod._WARNED_MISSING_PYGMENTS = False
         builtins.__import__ = fake_import
-        out = highlight_code_blocks(html)
+        warning = io.StringIO()
+        with contextlib.redirect_stderr(warning):
+            out = highlight_code_blocks(html)
     finally:
         builtins.__import__ = original_import
+        highlight_mod._WARNED_MISSING_PYGMENTS = original_warned
 
     check("highlight falls back unchanged without Pygments",
           out == html,
           f"out differs: {out[:200]}")
+    check("highlight warns when Pygments is missing",
+          "WARN: Pygments is not installed" in warning.getvalue(),
+          f"warning: {warning.getvalue()}")
 
 
 def main() -> int:

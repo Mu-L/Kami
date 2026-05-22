@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import html as html_mod
 import re
+import sys
 
 CODE_BLOCK_RE = re.compile(
     r'(<pre[^>]*>\s*<code\s+class="language-([\w+-]+)"[^>]*>)'
@@ -23,6 +24,20 @@ KAMI_PALETTE = {
     "dark_warm":  "#3d3d3a",
     "near_black": "#141413",
 }
+
+_WARNED_MISSING_PYGMENTS = False
+
+
+def _warn_missing_pygments() -> None:
+    global _WARNED_MISSING_PYGMENTS
+    if _WARNED_MISSING_PYGMENTS:
+        return
+    print(
+        "WARN: Pygments is not installed; language-tagged code blocks will render monochrome. "
+        "Install with `python3 -m pip install Pygments` to enable syntax highlighting.",
+        file=sys.stderr,
+    )
+    _WARNED_MISSING_PYGMENTS = True
 
 
 def _build_kami_style():
@@ -95,12 +110,13 @@ def highlight_code_blocks(html_text: str) -> str:
     Returns HTML unchanged if Pygments is not installed or no
     language-tagged blocks are found.
     """
+    if not CODE_BLOCK_RE.search(html_text):
+        return html_text
+
     try:
         import pygments  # noqa: F401
     except ImportError:
-        return html_text
-
-    if not CODE_BLOCK_RE.search(html_text):
+        _warn_missing_pygments()
         return html_text
 
     return CODE_BLOCK_RE.sub(_highlight_block, html_text)

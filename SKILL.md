@@ -52,6 +52,8 @@ When ambiguous (e.g. a one-word command like "resume"), ask a one-liner rather t
 
 Always use `CHEATSHEET.md` and `references/*.md` for design, writing, production, and diagram guidance.
 
+Code blocks with `class="language-*"` are highlighted only when optional `Pygments` is installed in the build environment. Without it, PDFs still render and code blocks stay monochrome.
+
 ## Step 1.5 · Intent extraction (silent checklist)
 
 Before choosing a template, verify these four dimensions are clear. Do not ask unless 2+ are missing and cannot be inferred from context.

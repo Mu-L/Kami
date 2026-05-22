@@ -112,7 +112,7 @@ The file has YAML frontmatter (structured fields: name, role, email, website, Gi
 
 Warm parchment canvas, ink blue as the sole accent, serif carries hierarchy, no hard shadows or flashy palettes. Not a UI framework; a constraint system for printed matter. Documents should read as composed pages, not dashboards.
 
-Ten template types: One-Pager, Long Doc, Letter, Portfolio, Resume, Slides, Equity Report, Changelog, and Landing Page in EN and CN. Fourteen inline SVG diagram types included. Code blocks support Pygments-based syntax highlighting. Kami picks the right variant based on the language you write in.
+Ten template types: One-Pager, Long Doc, Letter, Portfolio, Resume, Slides, Equity Report, Changelog, and Landing Page in EN and CN. Fourteen inline SVG diagram types included. Code blocks support Pygments-based syntax highlighting when `Pygments` is installed; without it, PDFs still render and code stays monochrome. Kami picks the right variant based on the language you write in.
 
 | Element | Rule |
 |---|---|
