@@ -84,7 +84,7 @@
         "name": "How do I set up Kami?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Claude Code: npx skills add tw93/kami -a claude-code -g -y. The plugin marketplace path is temporarily affected in Claude Code 2.1.136-2.1.138. Generic agents: npx skills add tw93/kami -a '*'. Claude Desktop: download kami.zip from GitHub Releases and upload it in Skills settings."
+          "text": "Claude Code: npx skills add tw93/kami -a claude-code -g -y. Claude Code plugin marketplace (v2.1.142+): /plugin marketplace add tw93/kami && /plugin install kami@kami. Generic agents: npx skills add tw93/kami -a '*'. Claude Desktop: download kami.zip from GitHub Releases and upload it in Skills settings."
         }
       },
       {
@@ -208,7 +208,7 @@ npx skills add tw93/kami -a claude-code -g -y
 
 <span class="c"># Codex</span>
 npx skills add tw93/kami -a codex -g -y</pre>
-    <p class="section-lede" style="font-size:14px;">Claude Code plugin marketplace install is temporarily affected in versions 2.1.136-2.1.138; use the Claude Code command above until upstream fixes root skill path validation.</p>
+    <p class="section-lede" style="font-size:14px;">Claude Code plugin marketplace also works on v2.1.142+: <code>/plugin marketplace add tw93/kami</code> then <code>/plugin install kami@kami</code>.</p>
     <p class="section-lede" style="font-size:14px;">Claude Desktop: download <a href="https://github.com/tw93/kami/releases/latest/download/kami.zip" style="color:var(--brand); text-decoration:none; font-weight:500;">kami.zip</a>, then upload it in Customize &gt; Skills &gt; "+" &gt; Create skill.</p>
   </section>
 
@@ -661,7 +661,7 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
       </div>
       <div class="faq-pair">
         <dt>How do I set it up?</dt>
-        <dd>Claude Code: <code style="font-family:var(--mono); font-size:0.9em; color:var(--brand);">npx skills add tw93/kami -a claude-code -g -y</code>. Plugin marketplace install is temporarily affected in Claude Code 2.1.136-2.1.138. Generic agents like Codex or OpenCode: <code style="font-family:var(--mono); font-size:0.9em; color:var(--brand);">npx skills add tw93/kami -a '*' -g -y</code>. Claude Desktop: download kami.zip from GitHub Releases and upload it in Customize &gt; Skills. No slash command needed, the skill auto-triggers from natural requests.</dd>
+        <dd>Claude Code: <code style="font-family:var(--mono); font-size:0.9em; color:var(--brand);">npx skills add tw93/kami -a claude-code -g -y</code>. Plugin marketplace on Claude Code v2.1.142+: <code style="font-family:var(--mono); font-size:0.9em; color:var(--brand);">/plugin marketplace add tw93/kami</code> then <code style="font-family:var(--mono); font-size:0.9em; color:var(--brand);">/plugin install kami@kami</code>. Generic agents like Codex or OpenCode: <code style="font-family:var(--mono); font-size:0.9em; color:var(--brand);">npx skills add tw93/kami -a '*' -g -y</code>. Claude Desktop: download kami.zip from GitHub Releases and upload it in Customize &gt; Skills. No slash command needed, the skill auto-triggers from natural requests.</dd>
       </div>
       <div class="faq-pair">
         <dt>What languages does it support?</dt>
