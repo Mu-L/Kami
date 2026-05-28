@@ -955,7 +955,11 @@ Files:
 | CN sample deck | `assets/templates/marp/slides-marp.md` |
 | EN sample deck | `assets/templates/marp/slides-marp-en.md` |
 
-Shared with WeasyPrint slides: every design token (`--parchment`, `--brand`, `--serif`, `--mono`), every class (`.eyebrow`, `.lead`, `.mt`, `.ml`, `.mb`, `.mc`, `.co`, `.c2`, `table.t2x2`, `table.data`, `section.cover`), and the 280×158mm page size. The Marp theme is a port, not a redesign. Brand color and logo follow the same `brand-profile.md` Layer C rules: edit `--brand` in the theme CSS; insert a logo via `<img>` on the cover slide.
+Shared with WeasyPrint slides: every design token (`--parchment`, `--brand`, `--serif`, `--mono`), the Kami class scale (`.eyebrow`, `.lead`, `.mt`, `.ml`, `.mb`, `.mc`, `.co`, `.c2`, `table.t2x2`, `table.data`, `section.cover`), and the 280×158mm page size. The Marp theme is a port, not a redesign.
+
+Marp-specific additions on top of that port: the theme styles bare `<p>`, `<ul>`, `<ol>`, `<li>` so that plain Markdown body content picks up Kami rhythm without explicit class attributes. These rules do not exist in `slides-weasy.html` because the WeasyPrint deck never has unclassed Markdown — they are required here because Marpit's defaults would otherwise leak through.
+
+Brand color and logo follow the same `brand-profile.md` Layer C rules: edit `--brand` in the theme CSS; insert a logo with `<img src="../../images/logo.svg" width="80">` on the cover slide. The output-path caveat in `production.md` Part 2.5 applies to logo URLs the same way it applies to fonts.
 
 Marp-specific syntax to know:
 
