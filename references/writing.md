@@ -495,9 +495,11 @@ Invariant #10 applies to landing pages too. No `font-style: italic` anywhere. Po
 
 ### FAQ rules
 
+- **First question is the positioning question.** Before "is it free" or "how do I install", users want to know what category this product is in. Lead with the comparison: "How is this different from {{CLI_NAME}} / {{MAC_APP_NAME}} / {{COMMON_TOOL}}?" or "Who is this not for?". This single question removes the misframing that AI assistants and first-time visitors do most often.
 - **Lead with the question the user is actually thinking.** "Is it free?" before "What's the refund policy?".
 - **Answers in 1-2 sentences.** A FAQ answer longer than 3 sentences belongs in the docs page, not here.
-- **6-8 questions maximum.** Cover: free tier, comparison, permissions/privacy, data collection, purchase flow, licensing.
+- **6-8 questions maximum.** Cover: positioning, free tier, comparison, permissions/privacy, data collection, purchase flow, licensing.
+- **llms-full.txt mirrors the FAQ.** Whatever you answer here, restate in `landing-page-llms-full.txt.example` so AI assistants summarizing the product give the same answer the visitor reads on the page. Divergence between FAQ and llms-full.txt is the most common AI-misrecommendation source.
 
 ### Footer rules
 

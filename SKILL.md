@@ -1,6 +1,6 @@
 ---
 name: kami
-description: 'Typeset professional documents and product landing pages: resumes, one-pagers, white papers, letters, portfolios, slide decks, landing pages. Warm parchment, ink-blue accent, serif-led hierarchy. CN uses TsangerJinKai02, EN uses Charter, JA uses YuMincho (best-effort). Triggers on "做 PDF / 排版 / 一页纸 / 白皮书 / 作品集 / 简历 / PPT / slides / 落地页 / 官网 / landing page / product page", or "build me a resume / make a one-pager / design a slide deck / turn this into a PDF / make this presentable / create a landing page".'
+description: 'Typeset professional documents and product landing pages: resumes, one-pagers, white papers, letters, portfolios, slide decks, landing pages. Warm parchment, ink-blue accent, serif-led hierarchy. CN uses TsangerJinKai02, EN uses Charter, JA uses YuMincho (best-effort). Triggers on "做 PDF / 排版 / 一页纸 / 白皮书 / 作品集 / 简历 / PPT / slides / Marp / markdown slides / マークダウンのスライド / 落地页 / 官网 / landing page / product page", or "build me a resume / make a one-pager / design a slide deck / turn this into a PDF / make this presentable / create a landing page".'
 ---
 
 # kami · 紙
@@ -99,9 +99,11 @@ If a change touches `SKILL.md`, templates, scripts, references, or package input
 
 > **Landing Page**: Screen-first interactive template. No PDF output. Includes gallery carousel with auto-rotate, hero entrance animation, responsive breakpoints (880px / 480px), and prefers-reduced-motion support. Deploy as static HTML to Vercel / Netlify / any host. The agent fills {{PLACEHOLDER}} values and HTML comment blocks, then saves as a ready-to-serve `.html` file.
 
-> Slides: default to `slides-weasy.html` / `slides-weasy-en.html` (WeasyPrint HTML → PDF). Use `slides.py` / `slides-en.py` only when the user explicitly requires an editable PPTX file.
+> **Landing Page companion files**: For a production multilingual deploy, copy the five `landing-page-*.example` files alongside the main HTML, remove the `.example` suffix, and fill the placeholders. They cover Vercel rewrites and headers, sitemap hreflang, robots AI allowlist, and llms.txt + llms-full.txt for AI assistants. The main HTML already ships matching hreflang and og:locale in `<head>`; an Accept-Language redirect at the end of `landing-page-en.html` is commented out for opt-in. `{{SITE_ORIGIN}}` is the scheme + host of your `{{CANONICAL_URL}}` (e.g. `https://example.com`). See `references/design.md` Section 11 «Companion assets».
 
-> Deck recipe: read design.md Section 8 before drafting slides.
+> Slides: default to `slides-weasy.html` / `slides-weasy-en.html` (WeasyPrint HTML → PDF). Use `slides.py` / `slides-en.py` only when the user explicitly requires an editable PPTX file. Use `assets/templates/marp/slides-marp(.md|.css)` only when the user explicitly asks for Marp / markdown slides / a deck that lives in a `.md` file.
+
+> Deck recipe: read design.md Section 8 before drafting slides. Marp-specific constraints live in design.md §8 «Marp variant».
 
 ### Decision tree (use before asking)
 
@@ -252,12 +254,13 @@ Skip this step for every doc type except slides.
 
 ### Path selection
 
-Default to the WeasyPrint HTML path. Switch to pptx only if the user explicitly requires an editable PPTX file.
+Default to the WeasyPrint HTML path. Switch to pptx only if the user explicitly requires an editable PPTX file. Switch to Marp only when the user explicitly asks for Marp / markdown slides.
 
 | Path | Template | When |
 |---|---|---|
-| WeasyPrint HTML → PDF (default) | `slides-weasy.html` / `slides-weasy-en.html` | All cases unless PPTX is required |
+| WeasyPrint HTML → PDF (default) | `slides-weasy.html` / `slides-weasy-en.html` | All cases unless PPTX or Marp is required |
 | python-pptx → PPTX (fallback) | `slides.py` / `slides-en.py` | User explicitly requires editable PPTX |
+| Marp Markdown (variant) | `assets/templates/marp/slides-marp.md` (+ `slides-marp.css`) / `slides-marp-en.md` (+ `slides-marp-en.css`) | User explicitly asks for Marp, "markdown slides", or a deck that lives in a `.md` file. The shipped `.md` is a real deck about Kami Marp itself; copy and replace the content, leave the structure. Rendering uses the user's local `marp` CLI; the repo does not bundle it. |
 
 ### Page size
 
@@ -289,6 +292,8 @@ Before drafting any slide, confirm these points with the user. Ask all at once, 
 - Each bullet fits one line: trim until it does
 - 2×2 layouts: use `table.t2x2`, not CSS Grid
 - Pinned conclusions: use `.co` at `position: absolute; bottom: 12mm`
+
+These rules apply identically to Marp decks. Marp-specific syntax: see `references/design.md` §8 «Marp variant».
 
 ## Step 2.7 · Layout note (transparent, non-blocking)
 

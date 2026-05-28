@@ -942,6 +942,42 @@ table.data td:first-child {
 6. Each bullet fits one line
 7. Shrink page first before adding more content
 
+### Marp variant
+
+Marp is an optional third path, alongside WeasyPrint HTML and python-pptx. Use it only when the user explicitly asks for Marp, "markdown slides", or a deck that lives in a `.md` file. The repo does not bundle `marp-cli`; rendering happens with the user's local install.
+
+Files:
+
+| Asset | Path |
+|---|---|
+| CN theme CSS | `assets/templates/marp/slides-marp.css` |
+| EN theme CSS | `assets/templates/marp/slides-marp-en.css` |
+| CN sample deck | `assets/templates/marp/slides-marp.md` |
+| EN sample deck | `assets/templates/marp/slides-marp-en.md` |
+
+Shared with WeasyPrint slides: every design token (`--parchment`, `--brand`, `--serif`, `--mono`), every class (`.eyebrow`, `.lead`, `.mt`, `.ml`, `.mb`, `.mc`, `.co`, `.c2`, `table.t2x2`, `table.data`, `section.cover`), and the 280×158mm page size. The Marp theme is a port, not a redesign. Brand color and logo follow the same `brand-profile.md` Layer C rules: edit `--brand` in the theme CSS; insert a logo via `<img>` on the cover slide.
+
+Marp-specific syntax to know:
+
+| Need | Marp syntax |
+|---|---|
+| Page break | One blank line, then `---`, then one blank line |
+| Per-slide class (e.g. cover) | `<!-- _class: cover -->` at the top of the section |
+| Per-slide pagination off | `<!-- _paginate: false -->` (use it on the cover and the closing slide) |
+| Per-slide footer override | `<!-- _footer: "..." -->` |
+| Global header / footer / pagination | Set in the deck's YAML front-matter (`paginate: true`, `footer: "Project"`) |
+| Background image | `![bg](path.jpg)` |
+
+Constraints that bite if you arrive from the WeasyPrint slides:
+
+- The page unit is `section`, not `.slide`. CSS that targets `.slide` will not match. The theme already declares `section { width: 280mm; height: 158mm; position: relative; }`, so `.co { position: absolute; bottom: 12mm }` still pins to the bottom of the current slide.
+- Markdown blocks inside `<div>` wrappers need surrounding blank lines for Marp to parse them as Markdown. The sample deck shows the pattern for `.c2` and `table.t2x2`.
+- `paginate: true` injects a page number via the `section::after` pseudo-element. Do not also place a `.page-num` element by hand; you will get two numbers.
+- The theme is not registered with `--theme-set` by default. Render with `marp --theme-set assets/templates/marp slides-marp.md ...` (see `references/production.md` for the full command matrix).
+- Marp's PDF / PPTX export depends on Chromium. Behind a corporate proxy or in CI, expect a one-time Chromium download.
+
+The full SKILL.md content contract (assertion-evidence titles, 1 slide 1 claim, no section divider slides, no CJK parentheses, pinned `.co` for sparse pages) applies to Marp decks unchanged.
+
 ---
 
 ## 9. Horizontal Funnel / Progress Bar Pattern
@@ -1124,3 +1160,30 @@ Both: pill shape (999px radius), 15px `--latin-ui`, weight 500, 1.5px border, mi
 - Links: inline with middot (`&middot;`) separators between items, dark-warm color. Editorial pattern, not flex-gap
 - Ethos: closing italic serif line, olive color, max-width 360px. The italic voice signals a personal sign-off
 - Collapses to single column below 880px
+
+### Cross-lang typography hardening
+
+- **Numeric alignment across CJK and Latin runs.** Use `font-variant-numeric: lining-nums tabular-nums` on every node that displays numbers (prices, metrics, version strings, tabular data). Lining keeps digit height uniform; tabular keeps digit width uniform. Without lining-nums, oldstyle fonts drop descenders on 3, 4, 5, 7, 9 and break vertical rhythm.
+- **Latin fallback before CJK in the serif stack on Chinese pages.** Charter or Georgia first in `html[lang="zh-CN"] { --serif: ... }`, so mixed runs like "Mac/22/$19" share baseline with the Chinese body.
+- **Avoid scaling the currency glyph with super.** Do not write `.price-currency { font-size: 0.5em; vertical-align: super }`. That trick makes `$` and the digit visually unequal. Prefer `font-size: 0.74em; line-height: 1; transform: translateY(0.015em);`.
+- **Language menu items need vertical room for descenders.** When `<a>` inside `.lang-menu` has `line-height: 1`, the descender of 'g' / 'y' / 'p' is clipped. Use `min-height: 32px; padding: 6px 10px; line-height: 1.35;`. Add an invisible `::before` bridge between trigger and menu so the cursor can cross the gap without dismissing the menu.
+
+> The main landing-page template does not ship a language switcher or a price card by default; the `{{HERO_LINKS}}` slot is where one would go. Kami's own site at `styles.css` L67-151 ships a tested `.lang-switch` + `.lang-menu` implementation (hover bridge, descender padding, focus-within fallback). Copy it when you add multi-locale links to a landing page.
+
+### Multilingual SEO scaffolding
+
+- **hreflang link block in `<head>`.** One `<link rel="alternate" hreflang>` per shipped locale plus one `hreflang="x-default"`. Drop locales that have no actual page. Add `<link rel="alternate" type="text/plain" href="/llms.txt">` so AI assistants find the summary file.
+- **og:locale + og:locale:alternate.** Self-reference the current page locale on `og:locale`, list the others on `og:locale:alternate`. Social previews on Facebook, LinkedIn, Telegram use this to pick the right thumbnail.
+- **Canonical points at the per-locale URL.** Each locale should have a canonical that matches its own URL, not a single canonical pointing to `/`.
+
+### Companion assets
+
+The landing-page template alone is one HTML file. To deploy a production multilingual site you ship five companion files in the same folder; each is provided as `.example` and you remove the suffix before deploying:
+
+- `landing-page-vercel.json.example`: path-based rewrites for `/zh`, `/tw`, `/ja`, `/ko`, host-canonical redirect, security headers, immutable cache for static assets.
+- `landing-page-sitemap.xml.example`: one `<url>` per locale with `<xhtml:link>` cross-references; mirrors the hreflang block in `<head>`.
+- `landing-page-robots.txt.example`: AI crawler allowlist (GPTBot, ClaudeBot, PerplexityBot, Applebot, OAI-SearchBot, Claude-SearchBot).
+- `landing-page-llms.txt.example`: short brand summary; positioning, one-line competitor contrast, pricing, key links.
+- `landing-page-llms-full.txt.example`: long-form companion AI assistants pull for accurate feature-level answers. Has Overview, Pricing, Features, Comparison, FAQ.
+
+The optional Accept-Language redirect at the end of `landing-page-en.html` is commented out by default. Uncomment only after confirming `/zh/`, `/tw/`, `/ja/`, `/ko/` actually resolve on the host.
