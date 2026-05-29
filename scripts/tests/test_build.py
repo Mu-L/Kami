@@ -30,9 +30,11 @@ from build import (  # noqa: E402
     _BG_R,
     _extract_root_vars,
     _last_content_y,
+    _off_palette_findings,
     _pair_names,
     _parse_slide_sequence,
     check_cross_template_consistency,
+    check_off_palette,
     check_placeholders,
     scan_file,
 )
@@ -309,6 +311,51 @@ def test_scan_file_cool_gray() -> None:
               f"rules found: {rules or '(none)'}")
     finally:
         p.unlink(missing_ok=True)
+
+
+def test_off_palette_flags_non_token_hex() -> None:
+    """A non-token, non-cool-gray hex in a component rule is off-palette."""
+    fixture = """<!doctype html>
+<html><head><style>
+.x { color: #ff00aa; }
+</style></head><body></body></html>
+"""
+    p = write_temp_html(fixture)
+    try:
+        findings = _off_palette_findings(p, {"#1b365d"})
+        rules = {f.rule for f in findings}
+        check("_off_palette_findings flags non-token hex #ff00aa",
+              "off-palette" in rules,
+              f"rules found: {rules or '(none)'}")
+    finally:
+        p.unlink(missing_ok=True)
+
+
+def test_off_palette_ignores_root_and_svg() -> None:
+    """Hex inside :root token defs and inside <svg> blocks must be skipped."""
+    fixture = """<!doctype html>
+<html><head><style>
+:root { --brand: #1B365D; --accent: #ff00aa; }
+</style></head><body>
+<svg viewBox="0 0 10 10"><rect fill="#ff0000" /></svg>
+</body></html>
+"""
+    p = write_temp_html(fixture)
+    try:
+        findings = _off_palette_findings(p, {"#1b365d"})
+        check("_off_palette_findings skips :root defs and <svg> fills",
+              findings == [],
+              f"unexpected findings: {[(f.line, f.excerpt) for f in findings]}")
+    finally:
+        p.unlink(missing_ok=True)
+
+
+def test_off_palette_repo_clean() -> None:
+    """The real editorial templates must carry no off-palette colors."""
+    rc = silently(check_off_palette)
+    check("check_off_palette passes on the real templates",
+          rc == 0,
+          f"check_off_palette returned {rc}")
 
 
 def test_scan_file_ignores_block_comment_rgba() -> None:
@@ -800,6 +847,9 @@ def main() -> int:
     test_scan_file_clean_template()
     test_scan_file_line_height_too_loose()
     test_scan_file_cool_gray()
+    test_off_palette_flags_non_token_hex()
+    test_off_palette_ignores_root_and_svg()
+    test_off_palette_repo_clean()
     test_scan_file_ignores_block_comment_rgba()
     test_scan_file_thin_border_with_radius()
     test_parse_slide_sequence_empty()

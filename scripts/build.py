@@ -62,9 +62,11 @@ from checks import (  # noqa: F401  re-exported for test_build.py
 )
 from lint import (  # noqa: F401  re-exported for test_build.py
     _extract_root_vars,
+    _off_palette_findings,
     _pair_names,
     check_all,
     check_cross_template_consistency,
+    check_off_palette,
     scan_file,
 )
 from tokens import sync_check
@@ -338,7 +340,8 @@ def main(argv: list[str]) -> int:
         css_result = check_all(verbose)
         sync_result = sync_check(verbose)
         cross_result = check_cross_template_consistency(verbose)
-        return max(css_result, sync_result, cross_result)
+        palette_result = check_off_palette(verbose)
+        return max(css_result, sync_result, cross_result, palette_result)
     if args[0] == "--sync":
         verbose = "-v" in args[1:] or "--verbose" in args[1:]
         return sync_check(verbose)

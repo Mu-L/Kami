@@ -12,6 +12,7 @@ background, thin border with border-radius, etc.) — not style preferences.
 """
 from __future__ import annotations
 
+import json
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -23,6 +24,7 @@ from shared import (
     ROOT,
     SCREEN_TEMPLATES,
     TEMPLATES,
+    TOKENS_FILE,
     load_cross_template_allowlist,
 )
 from tokens import CSS_VAR, ROOT_BLOCK
@@ -42,6 +44,7 @@ THIN_CLOSED_BORDER = re.compile(
 )
 BORDER_RADIUS_PROP = re.compile(r"border-radius\s*:", re.IGNORECASE)
 CSS_BLOCK_COMMENT_RE = re.compile(r"/\*.*?\*/", re.DOTALL)
+SVG_BLOCK_RE = re.compile(r"<svg\b.*?</svg>", re.DOTALL | re.IGNORECASE)
 
 
 @dataclass
@@ -191,6 +194,80 @@ def check_all(verbose: bool) -> int:
         for f in items:
             rel = f.file.relative_to(ROOT)
             print(f"  {rel}:{f.line}  {f.excerpt}")
+    return 1
+
+
+# ---------- off-palette color guard ----------
+#
+# design.md core invariant: a single chromatic accent (ink-blue) plus warm
+# neutrals, zero cool tones. The salmon-border regression slipped past the
+# token-drift guard because it was a hardcoded hex inside a component rule, not
+# a :root token. This guard mechanizes the invariant: any hex literal in an
+# editorial template that is neither a registered token value nor a cool-gray
+# (those have their own rule) is an off-palette color. The single sanctioned
+# semantic exception (the changelog breaking-change badge) is registered as the
+# --breaking-* tokens, so it lands in `allowed` and passes.
+#
+# Scope is deliberately narrow: editorial TEMPLATES/*.html only. Diagrams use
+# warm-gray chart ramps that are intentionally not tokens, and inline <svg>
+# charts carry their own fills -- both are skipped (diagrams by directory, svg
+# by block). :root blocks define the tokens themselves, so they are skipped too.
+
+
+def _blank_block(text: str, regex: re.Pattern[str]) -> str:
+    """Replace each match with same-length whitespace (newlines preserved) so
+    line numbers stay accurate after a block is masked out."""
+    def repl(m: re.Match[str]) -> str:
+        return "".join(ch if ch == "\n" else " " for ch in m.group(0))
+    return regex.sub(repl, text)
+
+
+def _load_token_values() -> set[str]:
+    """Return the set of canonical token hex values (lowercased)."""
+    if not TOKENS_FILE.exists():
+        return set()
+    try:
+        data = json.loads(TOKENS_FILE.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return set()
+    return {v.lower() for v in data.values() if isinstance(v, str) and v.startswith("#")}
+
+
+def _off_palette_findings(path: Path, allowed: set[str]) -> list[Finding]:
+    raw = path.read_text(encoding="utf-8", errors="replace")
+    text = _strip_css_block_comments(raw)
+    text = _blank_block(text, ROOT_BLOCK)
+    text = _blank_block(text, SVG_BLOCK_RE)
+    findings: list[Finding] = []
+    for i, line in enumerate(text.splitlines(), start=1):
+        for m in HEX_ANY.finditer(line):
+            h = m.group(0).lower()
+            if h in allowed:
+                continue
+            if h in COOL_GRAY_BLOCKLIST:
+                continue  # reported by the cool-gray rule in scan_file
+            findings.append(Finding(path, i, "off-palette",
+                                    f"{h} is not a registered token; single-accent palette violated"))
+    return findings
+
+
+def check_off_palette(verbose: bool = False) -> int:
+    allowed = _load_token_values()
+    targets = sorted(TEMPLATES.glob("*.html"))
+    findings: list[Finding] = []
+    for p in targets:
+        file_findings = _off_palette_findings(p, allowed)
+        findings.extend(file_findings)
+        if verbose:
+            print(f"scanned {p.relative_to(ROOT)}: {len(file_findings)} off-palette finding(s)")
+
+    if not findings:
+        print(f"OK: no off-palette colors across {len(targets)} template(s)")
+        return 0
+
+    print(f"\n[off-palette] {len(findings)}")
+    for f in findings:
+        print(f"  {f.file.relative_to(ROOT)}:{f.line}  {f.excerpt}")
     return 1
 
 

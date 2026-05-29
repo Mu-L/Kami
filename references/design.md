@@ -68,6 +68,15 @@ Four levels: near-black (primary) > dark-warm (secondary) > olive (subtext) > st
 --border-soft: #e5e3d8;   /* Secondary border - row separators, subtle dividers */
 ```
 
+### Semantic warm accent (the one sanctioned exception)
+
+```css
+--breaking-bg: #f0e0d8;   /* Changelog .tag.breaking background - muted warm peach */
+--breaking-fg: #8b4513;   /* Changelog .tag.breaking text - warm brown */
+```
+
+The "no second chromatic color" rule has exactly one approved exception: the breaking-change badge in the changelog template needs a warm warning tint to read as "caution" without importing a red. Both values are warm-toned (R > G > B), registered as `--breaking-*` tokens in `tokens.json`, and enforced by the off-palette lint guard. Any other off-token color is a violation. Do not add a second semantic accent without registering it here and in `tokens.json`.
+
 ### Translucent -> Solid conversion (TAGS MUST BE SOLID)
 
 **Why**: WeasyPrint's alpha compositing for padding vs glyph areas produces a visible double rectangle on zoom. See `production.md` Part 4 Pitfall #1.
