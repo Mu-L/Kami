@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <!-- ==================================================================
      ONE-PAGER · English · parchment design system
-     Single A4 proposal / report / executive summary
+     Single A4 product brief / proposal / executive summary
      ================================================================== -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Pake · Product Brief</title>
+<title>Mole · Product Brief</title>
 <meta name="author" content="Tw93">
-<meta name="description" content="Pake turns any webpage into a lightweight native desktop app, built on Rust and Tauri.">
-<meta name="keywords" content="Pake, Tauri, Rust, desktop app, webview">
+<meta name="description" content="Mole folds five Mac maintenance tools into one quiet, buy-once binary.">
+<meta name="keywords" content="Mole, macOS, cleanup, uninstall, disk analyzer, Mac utility">
 <meta name="generator" content="Kami">
 <style>
   @font-face { font-family: "JetBrains Mono"; src: url("../fonts/JetBrainsMono.woff2") format("woff2"); font-weight: 400; font-style: normal; }
@@ -54,11 +54,12 @@
 
   .serif { font-family: var(--serif); }
 
+  /* HEADER - quiet editorial opener: brand dot eyebrow + clean title,
+     anchored by a single hairline rule. No full-height left bar. */
   .header {
-    border-left: 2.5pt solid var(--brand);
-    border-radius: 1.5pt;
-    padding-left: 8pt;
-    margin-bottom: 14pt;
+    margin-bottom: 16pt;
+    padding-bottom: 12pt;
+    border-bottom: 0.5pt solid var(--border);
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
@@ -66,21 +67,32 @@
   }
   .title-block { flex: 1; }
   .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7pt;
     font-size: 9pt;
     color: var(--brand);
-    letter-spacing: 1pt;
+    letter-spacing: 1.5pt;
     text-transform: uppercase;
-    margin-bottom: 4pt;
+    margin-bottom: 7pt;
     font-weight: 500;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 8pt;
+    height: 1.5pt;
+    border-radius: 0.75pt;
+    background: var(--brand);
+    flex-shrink: 0;
   }
   h1 {
     font-family: var(--serif);
-    font-size: 26pt;
+    font-size: 27pt;
     font-weight: 500;
     color: var(--near-black);
-    line-height: 1.12;
+    line-height: 1.1;
     letter-spacing: -0.3pt;
-    margin-bottom: 5pt;
+    margin-bottom: 6pt;
   }
   .subtitle {
     font-size: 11.5pt;
@@ -95,25 +107,16 @@
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
   }
-  .brand-logo {
-    height: 44px;
-    width: auto;
-    max-width: 160px;
-    object-fit: contain;
-    align-self: flex-start;
-  }
 
   .metrics {
     display: flex;
     gap: 16pt;
     margin-bottom: 18pt;
-    padding: 4pt 0 6pt 0;
+    padding: 0 0 8pt 0;
     border-bottom: 0.3pt dotted var(--border);
   }
   .metric {
     flex: 1;
-    background: transparent;
-    padding: 0;
     display: flex;
     align-items: baseline;
     gap: 5pt;
@@ -159,7 +162,7 @@
     font-size: 12.5pt;
     line-height: 1.5;
     color: var(--dark-warm);
-    margin-bottom: 14pt;
+    margin-bottom: 16pt;
   }
 
   .hl { color: var(--brand); font-weight: 500; }
@@ -187,6 +190,7 @@
     left: 0;
     color: var(--brand);
   }
+  ul.dash li .k { color: var(--near-black); font-weight: 500; }
 
   .timeline {
     display: flex;
@@ -196,12 +200,11 @@
   .tl-step { flex: 1; break-inside: avoid; }
   .tl-year {
     font-family: var(--serif);
-    font-size: 11pt;
+    font-size: 10.5pt;
     font-weight: 500;
     color: var(--brand);
     margin-bottom: 2pt;
-    letter-spacing: 0.3pt;
-    text-transform: uppercase;
+    letter-spacing: 0.2pt;
   }
   .tl-head {
     font-size: 10pt;
@@ -215,45 +218,12 @@
     line-height: 1.45;
   }
 
-  .tag {
-    display: inline-block;
-    background: var(--tag-bg);
-    color: var(--brand);
-    font-size: 9pt;
-    font-weight: 500;
-    padding: 1pt 6pt;
-    border-radius: 3pt;
-    letter-spacing: 0.4pt;
-    text-transform: uppercase;
-    margin-right: 3pt;
-  }
-
-  table, .kami-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 9pt;
-    margin: 8pt 0;
-    break-inside: avoid;
-  }
-  table th, .kami-table th {
-    text-align: left;
-    font-weight: 500;
-    color: var(--dark-warm);
-    padding: 4pt 6pt;
-    border-bottom: 1pt solid var(--border);
-    background: transparent;
-  }
-  table td, .kami-table td {
-    padding: 3pt 6pt;
-    border-bottom: 0.3pt solid var(--border-soft);
-    vertical-align: top;
-  }
-
+  /* CALLOUT - single pull-quote bar, the one intentional use of the bar motif. */
   .callout {
     background: transparent;
     border-left: 1.8pt solid var(--brand);
     padding: 4pt 0 4pt 14pt;
-    margin: 10pt 0;
+    margin: 16pt 0 0 0;
     font-size: 10.5pt;
     line-height: 1.55;
     color: var(--olive);
@@ -262,7 +232,7 @@
   .callout .hl, .callout .em-brand { color: var(--brand); }
 
   .footer {
-    margin-top: 18pt;
+    margin-top: 16pt;
     padding-top: 6pt;
     border-top: 0.3pt dotted var(--border);
     font-size: 9pt;
@@ -279,89 +249,91 @@
 <div class="header">
   <div class="title-block">
     <div class="eyebrow">Product Brief</div>
-    <h1>Turn any webpage into a desktop app</h1>
-    <div class="subtitle">Pake packages a URL into a fast, native-feeling app, in one command.</div>
+    <h1>Five Mac tools, one quiet binary</h1>
+    <div class="subtitle">Mole cleans, uninstalls, optimizes, analyzes, and monitors, then gets out of your way.</div>
   </div>
   <div class="meta">
     Tw93<br>
     2026.06.14<br>
-    v3.0
+    v1.3
   </div>
 </div>
 
 <div class="metrics">
   <div class="metric">
-    <div class="metric-value">38K<span style="font-size:13pt">+</span></div>
-    <div class="metric-label">GitHub stars</div>
+    <div class="metric-value">5</div>
+    <div class="metric-label">tools, one binary</div>
   </div>
   <div class="metric">
-    <div class="metric-value">40<span style="font-size:13pt">×</span></div>
-    <div class="metric-label">smaller than Electron</div>
+    <div class="metric-value">$9</div>
+    <div class="metric-label">pay once, not yearly</div>
   </div>
   <div class="metric">
-    <div class="metric-value">3</div>
-    <div class="metric-label">platforms shipped</div>
+    <div class="metric-value">2</div>
+    <div class="metric-label">Macs per license</div>
   </div>
   <div class="metric">
-    <div class="metric-value">&lt;10<span style="font-size:13pt">s</span></div>
-    <div class="metric-label">to package an app</div>
+    <div class="metric-value">0</div>
+    <div class="metric-label">menu-bar clutter</div>
   </div>
 </div>
 
 <p class="lead">
-  Electron ships a whole browser with every app. Pake takes the opposite bet: lean on the system webview and write the shell in Rust, so the same web app becomes a desktop build that is <span class="hl">roughly 40× smaller</span> and starts in well under a second.
+  Mac maintenance has scattered into five subscription apps, each wanting a menu-bar slot and a yearly fee. Mole folds them back into <span class="hl">one quiet binary you buy once</span>, then stays out of the way until you need it.
 </p>
 
 <div class="two-col">
   <section>
-    <h2>Why Pake</h2>
-    <p>Most "wrap my site as an app" tools trade size and speed for convenience. Pake refuses the trade.</p>
+    <h2>Why Mole</h2>
+    <p>Five jobs that used to mean five purchases, five updaters, and five icons in your menu bar.</p>
     <ul class="dash">
-      <li>Bundles around <span class="hl">5 MB</span>, against 100 MB+ for an equivalent Electron build.</li>
-      <li>Native shortcuts, immersive window, and ad-blocking baked in.</li>
-      <li>One CLI command, or a no-code GitHub Action, to ship.</li>
+      <li>One-time <span class="hl">$9</span>, two Macs per license, no subscription.</li>
+      <li>No menu-bar widget, no background upsell, no telemetry.</li>
+      <li>Universal build: macOS 14+, Apple Silicon and Intel.</li>
     </ul>
   </section>
 
   <section>
-    <h2>How it works</h2>
-    <p>A Tauri + Rust core drives the platform webview directly, with thin per-OS adapters.</p>
+    <h2>What's inside</h2>
+    <p>Each tool gets its own page and a single job, nothing bolted on.</p>
     <ul class="dash">
-      <li>Rust shell handles windows, tray, and injection.</li>
-      <li>System webview renders the page, no Chromium copy.</li>
-      <li>One config maps URL, icon, and shortcuts to a build.</li>
+      <li><span class="k">Clean</span> reclaims caches, logs, and leftovers.</li>
+      <li><span class="k">Uninstall</span> removes apps and every trailing file.</li>
+      <li><span class="k">Optimize</span> tunes startup and memory load.</li>
+      <li><span class="k">Analyze</span> shows where disk space really goes.</li>
+      <li><span class="k">Status</span> tracks CPU, disk, and network live.</li>
     </ul>
   </section>
 </div>
 
 <section>
-  <h2>Roadmap<span class="sub">where the project is heading</span></h2>
+  <h2>What it replaces<span class="sub">five subscriptions, one purchase</span></h2>
   <div class="timeline">
     <div class="tl-step">
-      <div class="tl-year">Phase 1</div>
-      <div class="tl-head">One-command packaging</div>
-      <div class="tl-body">CLI turns any URL into macOS, Windows, and Linux builds.</div>
+      <div class="tl-year">CleanMyMac · Sensei</div>
+      <div class="tl-head">Clean + Optimize</div>
+      <div class="tl-body">Space reclaim and system tuning in one pass.</div>
     </div>
     <div class="tl-step">
-      <div class="tl-year">Phase 2</div>
-      <div class="tl-head">No-code pipeline</div>
-      <div class="tl-body">GitHub Action builds apps without a local toolchain.</div>
+      <div class="tl-year">AppCleaner</div>
+      <div class="tl-head">Uninstall</div>
+      <div class="tl-body">Apps and their leftovers, fully removed.</div>
     </div>
     <div class="tl-step">
-      <div class="tl-year">Phase 3</div>
-      <div class="tl-head">Deeper native bridge</div>
-      <div class="tl-body">Richer JS-to-system APIs while keeping the footprint tiny.</div>
+      <div class="tl-year">DaisyDisk · iStat</div>
+      <div class="tl-head">Analyze + Status</div>
+      <div class="tl-body">Where space and load actually go, at a glance.</div>
     </div>
   </div>
 </section>
 
 <div class="callout">
-  The web already is the cross-platform runtime. Pake just removes the 95 MB of browser you were shipping to use it.
+  Five subscriptions quietly add up to a few hundred dollars a year. Mole is <span class="hl">nine dollars, once</span>, and it never asks again.
 </div>
 
 <div class="footer">
-  <span>Open source · MIT</span>
-  <span>github.com/tw93/Pake</span>
+  <span>Mac utilities · macOS 14+ · Apple Silicon &amp; Intel</span>
+  <span>mole.fit</span>
 </div>
 
 </body>

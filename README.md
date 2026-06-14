@@ -45,9 +45,9 @@ Eight real PDFs across templates and languages. Click any preview to open it.
 </tr>
 <tr>
   <td align="center" width="25%">
-    <a href="assets/demos/demo-pake.pdf"><img src="assets/demos/demo-pake.png" alt="Pake product brief"></a>
+    <a href="assets/demos/demo-mole.pdf"><img src="assets/demos/demo-mole.png" alt="Mole product brief"></a>
     <br><b>One-Pager</b> · English
-    <br><sub>Pake product brief, 1 page</sub>
+    <br><sub>Mole product brief, 1 page</sub>
   </td>
   <td align="center" width="25%">
     <a href="assets/demos/demo-letter.pdf"><img src="assets/demos/demo-letter.png" alt="Recommendation letter"></a>
