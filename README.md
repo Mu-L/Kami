@@ -18,48 +18,55 @@ Part of a trilogy: [Kaku](https://github.com/tw93/Kaku) (書く) writes code, [W
 
 ## See it
 
-Eight real PDFs across templates and languages. Click any preview to open it.
+Nine real PDFs across templates and languages. Click any preview to open it.
 
 <table>
 <tr>
-  <td align="center" width="25%">
+  <td align="center" width="33%">
     <a href="assets/demos/demo-musk-resume.pdf"><img src="assets/demos/demo-musk-resume.png" alt="Founder resume"></a>
     <br><b>Resume</b> · English
     <br><sub>Founder resume, 2 pages</sub>
   </td>
-  <td align="center" width="25%">
+  <td align="center" width="33%">
     <a href="assets/demos/demo-resume-ko.pdf"><img src="assets/demos/demo-resume-ko.png" alt="Korean resume"></a>
     <br><b>Resume</b> · 한국어
     <br><sub>개발자 이력서, 2페이지</sub>
   </td>
-  <td align="center" width="25%">
+  <td align="center" width="33%">
     <a href="assets/demos/demo-tesla.pdf"><img src="assets/demos/demo-tesla.png" alt="Tesla equity report"></a>
     <br><b>Equity Report</b> · 中文
     <br><sub>Tesla Q1 2026 财报点评</sub>
   </td>
-  <td align="center" width="25%">
+</tr>
+<tr>
+  <td align="center" width="33%">
     <a href="assets/demos/demo-agent-slides.pdf"><img src="assets/demos/demo-agent-slides.png" alt="Agent keynote slides" /></a>
     <br><b>Slides</b> · English
     <br><sub>Agent keynote, 6 slides</sub>
   </td>
-</tr>
-<tr>
-  <td align="center" width="25%">
+  <td align="center" width="33%">
     <a href="assets/demos/demo-mole.pdf"><img src="assets/demos/demo-mole.png" alt="Mole product brief"></a>
     <br><b>One-Pager</b> · English
     <br><sub>Mole product brief, 1 page</sub>
   </td>
-  <td align="center" width="25%">
+  <td align="center" width="33%">
+    <a href="assets/demos/demo-waza.pdf"><img src="assets/demos/demo-waza.png" alt="Waza skills one-pager"></a>
+    <br><b>One-Pager</b> · English
+    <br><sub>Waza skills intro, 1 page</sub>
+  </td>
+</tr>
+<tr>
+  <td align="center" width="33%">
     <a href="assets/demos/demo-letter.pdf"><img src="assets/demos/demo-letter.png" alt="Recommendation letter"></a>
     <br><b>Letter</b> · 中文
     <br><sub>推荐信, 1 页</sub>
   </td>
-  <td align="center" width="25%">
+  <td align="center" width="33%">
     <a href="assets/demos/demo-changelog.pdf"><img src="assets/demos/demo-changelog.png" alt="Mole release notes"></a>
     <br><b>Changelog</b> · English
     <br><sub>Mole v1.7.1 release notes</sub>
   </td>
-  <td align="center" width="25%">
+  <td align="center" width="33%">
     <a href="assets/demos/demo-kaku.pdf"><img src="assets/demos/demo-kaku.png" alt="Kaku portfolio"></a>
     <br><b>Portfolio</b> · 日本語
     <br><sub>Kaku ターミナル作品集 · 7 ページ</sub>
