@@ -11,7 +11,10 @@ import contextlib
 import builtins
 import importlib.util
 import io
+import os
 import re
+import shutil
+import subprocess
 import sys
 import tempfile
 import zipfile
@@ -408,6 +411,44 @@ def test_off_palette_repo_clean() -> None:
           f"check_off_palette returned {rc}")
 
 
+def test_check_update_script() -> None:
+    """check-update.sh notifies on a newer remote, stays silent when current,
+    throttles to once per day, and fails silently offline. It only reads a
+    version file and sends no data; KAMI_UPDATE_URL points it at a fixture."""
+    script = REPO_ROOT / "scripts" / "check-update.sh"
+    check("check-update.sh exists", script.exists())
+    if not script.exists():
+        return
+    if shutil.which("bash") is None or shutil.which("curl") is None:
+        check("check-update.sh behavior (skipped: bash/curl unavailable)", True)
+        return
+    local_ver = (REPO_ROOT / "VERSION").read_text(encoding="utf-8").strip()
+
+    def run(cache: str, url: str) -> tuple[int, str]:
+        env = dict(os.environ, XDG_CACHE_HOME=cache, KAMI_UPDATE_URL=url)
+        r = subprocess.run(["bash", str(script)], capture_output=True, text=True, env=env)
+        return r.returncode, r.stdout.strip()
+
+    with tempfile.TemporaryDirectory() as d:
+        dp = Path(d)
+        newer = dp / "newer"; newer.write_text("9.9.9\n")
+        same = dp / "same"; same.write_text(local_ver + "\n")
+
+        rc, out = run(str(dp / "c1"), newer.as_uri())
+        check("check-update notifies on a newer remote", rc == 0 and "9.9.9" in out, out)
+
+        rc, out = run(str(dp / "c2"), same.as_uri())
+        check("check-update is silent when current", rc == 0 and out == "", out)
+
+        c3 = str(dp / "c3")
+        run(c3, newer.as_uri())
+        _, out2 = run(c3, newer.as_uri())
+        check("check-update throttles to once per day", out2 == "", out2)
+
+        rc, out = run(str(dp / "c4"), (dp / "nope").as_uri())
+        check("check-update fails silently when offline", rc == 0 and out == "", out)
+
+
 def test_lint_repo_clean() -> None:
     """The full CSS lint (scan_file across every template) must pass. This is
     what `build.py --check` runs; covering it here means a rule violation such
@@ -715,6 +756,7 @@ def main() -> int:
     test_off_palette_ignores_root_and_svg()
     test_off_palette_repo_clean()
     test_lint_repo_clean()
+    test_check_update_script()
     test_scan_file_ignores_block_comment_rgba()
     test_scan_file_thin_border_with_radius()
     test_parse_slide_sequence_empty()

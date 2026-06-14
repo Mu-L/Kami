@@ -123,7 +123,15 @@ npx skills add tw93/kami -a '*' -g -y
 
 Download [kami.zip](https://github.com/tw93/kami/releases/latest/download/kami.zip), open Customize > Skills > "+" > Create skill, and upload the ZIP directly (no need to unzip).
 
-The ZIP is lightweight: large CJK fonts are excluded from the skill package. In a repo checkout they load from local font files first, then jsDelivr CDN; in an installed skill, `scripts/ensure-fonts.sh` recovers missing Chinese or Korean fonts into the user font directory. To update: download the same URL, click "..." on the skill card, choose Replace, upload.
+The ZIP is lightweight: large CJK fonts are excluded from the skill package. In a repo checkout they load from local font files first, then jsDelivr CDN; in an installed skill, `scripts/ensure-fonts.sh` recovers missing Chinese or Korean fonts into the user font directory.
+
+**Update**
+
+```bash
+npx skills update kami -g -y
+```
+
+Marketplace installs use `claude plugin update kami`. Claude Desktop: download the latest [kami.zip](https://github.com/tw93/kami/releases/latest/download/kami.zip), click "..." on the skill card, choose Replace, upload. Kami also runs a quiet version check at most once a day and tells you in chat when a newer version is out; it only reads a public version file, sends no data, and is skipped when offline.
 
 The skill auto-triggers from natural requests, no slash command needed. Optimized for English and Chinese; Japanese and Korean are supported via best-effort CJK paths with visual QA before delivery.
 
