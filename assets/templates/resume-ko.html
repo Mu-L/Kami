@@ -247,6 +247,7 @@
     font-size: 9pt; color: var(--brand); font-weight: 500;
     margin-left: auto; background: #EEF2F7;
     padding: 0.4mm 1.2mm; border-radius: 2pt; letter-spacing: 0.05pt;
+    white-space: nowrap;
   }
   .proj-lines { display: table; width: 100%; }
   .proj-row { display: table-row; }
@@ -535,7 +536,8 @@
     <span class="sep">·</span>
     <a href="mailto:{{EMAIL}}">{{EMAIL}}</a>
     <span class="sep">·</span>
-    <span class="loc">{{나이}}세, {{도시}}</span>
+    <span class="loc">{{도시}}</span>
+    <!-- 채용 채널이 요구하고 사용자가 제공한 경우에만 도시 뒤에 나이 · 성별을 추가합니다. 희망 연봉은 이력서 본문에 쓰지 않습니다. -->
   </div>
 </div>
 

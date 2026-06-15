@@ -37,6 +37,7 @@ from build import (  # noqa: E402
     _off_palette_findings,
     _pair_names,
     _parse_slide_sequence,
+    _resume_balance_issues,
     check_all,
     check_cross_template_consistency,
     check_off_palette,
@@ -650,6 +651,25 @@ def test_density_threshold_buckets() -> None:
         )
 
 
+def test_resume_balance_issues() -> None:
+    min_fill, max_fill, max_gap = 0.83, 0.95, 0.12
+    check("resume balance accepts two filled pages",
+          _resume_balance_issues([0.88, 0.92], 2, min_fill, max_fill, max_gap) == [])
+
+    issues = _resume_balance_issues([0.92, 0.74], 2, min_fill, max_fill, max_gap)
+    check("resume balance flags low second page",
+          any("p2 fill" in issue for issue in issues),
+          f"issues={issues}")
+    check("resume balance flags page gap",
+          any("gap" in issue for issue in issues),
+          f"issues={issues}")
+
+    issues = _resume_balance_issues([0.90, 0.89, 0.50], 3, min_fill, max_fill, max_gap)
+    check("resume balance requires two pages",
+          any("expected 2" in issue for issue in issues),
+          f"issues={issues}")
+
+
 # --------------------------- runner ---------------------------
 
 def test_highlight_with_language() -> None:
@@ -772,6 +792,7 @@ def main() -> int:
     test_last_content_y_sparse_page()
     test_last_content_y_blank_page()
     test_density_threshold_buckets()
+    test_resume_balance_issues()
     test_highlight_with_language()
     test_highlight_without_language()
     test_highlight_without_pygments_dependency()

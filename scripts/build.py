@@ -5,7 +5,7 @@ Thin CLI shell. Implementation lives in:
   - lint.py    (scan_file, check_all, check_cross_template_consistency)
   - tokens.py  (sync_check)
   - verify.py  (verify_target, verify_all, show_fonts, font checks)
-  - checks.py  (check_placeholders, check_orphans, check_density, check_rhythm)
+  - checks.py  (check_placeholders, check_orphans, check_density, check_resume_balance, check_rhythm)
 
 Usage:
     python3 scripts/build.py                      # build all examples (HTML + diagrams + PPTX)
@@ -21,6 +21,7 @@ Usage:
     python3 scripts/build.py --check-orphans path/to/doc.pdf
     python3 scripts/build.py --check-density       # warn on pages with >25% trailing whitespace
     python3 scripts/build.py --check-density path/to/doc.pdf
+    python3 scripts/build.py --check-resume-balance path/to/resume.pdf
     python3 scripts/build.py --check-rhythm       # warn on monotonous slide sequences
     python3 scripts/build.py --check-rhythm slides slides-en
 """
@@ -54,10 +55,12 @@ from checks import (  # noqa: F401  re-exported for test_build.py
     _BG_R,
     _last_content_y,
     _parse_slide_sequence,
+    _resume_balance_issues,
     _scan_density,
     check_density,
     check_orphans,
     check_placeholders,
+    check_resume_balance,
     check_rhythm,
 )
 from lint import (  # noqa: F401  re-exported for test_build.py
@@ -352,6 +355,8 @@ def main(argv: list[str]) -> int:
         return check_orphans(args[1:])
     if args[0] == "--check-density":
         return check_density(args[1:])
+    if args[0] == "--check-resume-balance":
+        return check_resume_balance(args[1:])
     if args[0] == "--check-placeholders":
         return check_placeholders(args[1:])
     if args[0] == "--check-rhythm":

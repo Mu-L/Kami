@@ -338,6 +338,12 @@ Page 1 carries the projects section, which is the densest content. Page 2 carrie
 </body>
 ```
 
+Filled resume PDFs should be exactly 2 pages with both pages visually used. Check the rendered result:
+
+```bash
+python3 scripts/build.py --check-resume-balance path/to/resume.pdf
+```
+
 Page 2 font sizes stay at template defaults. The density variant only tightens page 1 elements. If page 2 has unusually long content, reduce `.os-intro`, `.conv-body`, or `.skill-body` individually, never globally.
 
 Resume visual rule: header and section titles carry the only structural rules. Top metrics stack value over label so labels stay single-line; project rows separate by padding, not borders.

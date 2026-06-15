@@ -242,6 +242,7 @@
     font-size: 9pt; color: var(--brand); font-weight: 500;
     margin-left: auto; background: #EEF2F7;
     padding: 0.4mm 1.2mm; border-radius: 2pt; letter-spacing: 0.05pt;
+    white-space: nowrap;
   }
   .proj-lines { display: table; width: 100%; }
   .proj-row { display: table-row; }
@@ -537,7 +538,8 @@
     <span class="sep">·</span>
     <a href="mailto:{{EMAIL}}">{{EMAIL}}</a>
     <span class="sep">·</span>
-    <span class="loc">{{年龄}} 岁在{{城市}}</span>
+    <span class="loc">{{城市}}</span>
+    <!-- 如投递渠道需要且用户提供，可在城市后追加： · 年龄 · 性别。不要写期望薪资。 -->
   </div>
 </div>
 
