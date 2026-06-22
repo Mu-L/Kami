@@ -49,6 +49,17 @@ BORDER_RADIUS_PROP = re.compile(r"border-radius\s*:", re.IGNORECASE)
 CSS_BLOCK_COMMENT_RE = re.compile(r"/\*.*?\*/", re.DOTALL)
 SVG_BLOCK_RE = re.compile(r"<svg\b.*?</svg>", re.DOTALL | re.IGNORECASE)
 
+# WeasyPrint-unsafe artifacts of un-normalized beautiful-mermaid SVG. These must
+# never reach a PDF-bound template/diagram: WeasyPrint does not resolve
+# color-mix(), render <foreignObject>, or fetch a runtime web font. The author
+# must pipe Mermaid output through scripts/mermaid_normalize.py first. Screen-only
+# landing pages are exempt (color-mix in CSS is fine in a real browser).
+MERMAID_UNSAFE = {
+    "mermaid-color-mix": re.compile(r"color-mix\s*\(", re.IGNORECASE),
+    "mermaid-foreignobject": re.compile(r"<foreignObject\b", re.IGNORECASE),
+    "mermaid-webfont-import": re.compile(r"fonts\.googleapis\.com", re.IGNORECASE),
+}
+
 
 @dataclass
 class Finding:
@@ -83,6 +94,9 @@ def scan_file(path: Path) -> list[Finding]:
             rgba_vars.add(m.group(1))
 
     is_en = path.name.endswith("-en.html")
+    # Screen-only templates (landing pages) never go through WeasyPrint, so the
+    # Mermaid-unsafe-SVG rule does not apply to them.
+    is_screen = path.name in set(SCREEN_TEMPLATES.values())
 
     # Pass 2: per-line rule checks
     is_python = path.suffix == ".py"
@@ -135,6 +149,12 @@ def scan_file(path: Path) -> list[Finding]:
             if h in COOL_GRAY_BLOCKLIST:
                 findings.append(Finding(path, i, "cool-gray",
                                         f"{h} is a cool / neutral gray, use warm undertone"))
+
+        if not is_screen and not is_python:
+            for rule, pattern in MERMAID_UNSAFE.items():
+                if pattern.search(raw):
+                    findings.append(Finding(path, i, rule,
+                        "un-normalized Mermaid SVG (run scripts/mermaid_normalize.py before embedding)"))
 
     # Pass 3: thin-border-radius block scan (pitfall #2 double-ring).
     # For each thin closed border line, scan backward to the block open and

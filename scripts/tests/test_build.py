@@ -180,7 +180,7 @@ def test_registry_consistency() -> None:
           set(screen_targets()) == set(SCREEN_TARGETS))
     check("HTML_TARGETS in build.py matches build_targets()",
           dict(HTML_TARGETS) == build_targets())
-    check("DIAGRAM_TARGETS has 14 entries", len(DIAGRAM_TARGETS) == 14,
+    check("DIAGRAM_TARGETS has 17 entries", len(DIAGRAM_TARGETS) == 17,
           f"got {len(DIAGRAM_TARGETS)}")
     check("PPTX_TARGETS has 2 entries", len(PPTX_TARGETS) == 2,
           f"got {len(PPTX_TARGETS)}")
@@ -833,6 +833,72 @@ def test_marp_themes_token_synced() -> None:
           "; ".join(drift) if drift else f"checked {checked}, no :root block found")
 
 
+# --------------------------- mermaid normalize ---------------------------
+
+def test_mermaid_color_mix_srgb_single_pct() -> None:
+    from mermaid_normalize import _Resolver
+    r = _Resolver({"--fg": "#141413", "--bg": "#f5f4ed"})
+    # color-mix(in srgb, fg 12%, bg) == 0.12*fg + 0.88*bg
+    got = r.hex_of("color-mix(in srgb, var(--fg) 12%, var(--bg))")
+    check("color-mix(in srgb, fg 12%, bg) resolves to warm gray",
+          got == "#dad9d3", f"got {got}")
+
+
+def test_mermaid_color_mix_both_pct() -> None:
+    from mermaid_normalize import _Resolver
+    r = _Resolver({"--bg": "#ffffff", "--c": "#000000"})
+    got = r.hex_of("color-mix(in srgb, var(--bg) 75%, var(--c) 25%)")
+    check("color-mix honors both explicit percentages", got == "#bfbfbf", f"got {got}")
+
+
+def test_mermaid_normalize_strips_unsafe_features() -> None:
+    from mermaid_normalize import normalize
+    # Root carries a deliberately NON-Kami theme (red accent, white bg) to prove
+    # the normalizer re-themes to the Kami palette regardless of source theme.
+    raw = (
+        '<svg xmlns="http://www.w3.org/2000/svg" '
+        'style="--bg:#ffffff;--fg:#000000;--accent:#ff0000;background:var(--bg)">'
+        "<style>@import url('https://fonts.googleapis.com/css2?family=Charter');\n"
+        "  text { font-family: 'Charter', system-ui, sans-serif; }\n"
+        "  svg { --_t: color-mix(in srgb, var(--fg) 25%, var(--bg)); }</style>"
+        '<rect fill="var(--accent)" stroke="var(--fg)"/></svg>'
+    )
+    out = normalize(raw)
+    check("normalize removes color-mix()", "color-mix(" not in out, out)
+    check("normalize removes var()", "var(" not in out, out)
+    check("normalize removes google-fonts import", "googleapis" not in out, out)
+    check("normalize drops the quoted single-family bug", "'Charter'" not in out, out)
+    check("normalize keeps the Kami CJK serif stack", "TsangerJinKai02" in out, out)
+    check("normalize resolves fill to a static hex", 'fill="#' in out, out)
+    check("normalize re-themes accent to Kami ink-blue",
+          "#1b365d" in out.lower(), out)
+    check("normalize drops the source theme's red accent",
+          "#ff0000" not in out.lower(), out)
+
+
+def test_mermaid_lint_flags_unnormalized_svg() -> None:
+    body = '<svg><rect fill="color-mix(in srgb, #000000 50%, #ffffff)"/></svg>'
+    path = write_temp_html(body, suffix=".html")  # not a screen-template name
+    try:
+        rules = {f.rule for f in scan_file(path)}
+        check("scan_file flags un-normalized mermaid color-mix",
+              "mermaid-color-mix" in rules, f"rules={rules}")
+    finally:
+        path.unlink(missing_ok=True)
+
+
+def test_mermaid_diagram_templates_normalized() -> None:
+    for name in ("sequence.html", "class.html", "er.html"):
+        path = REPO_ROOT / "assets" / "diagrams" / name
+        check(f"diagram {name} exists", path.exists(), f"missing {path}")
+        if not path.exists():
+            continue
+        text = path.read_text(encoding="utf-8")
+        check(f"{name} carries no color-mix()", "color-mix(" not in text)
+        check(f"{name} carries no <foreignObject>", "<foreignObject" not in text)
+        check(f"{name} carries no runtime web-font import", "googleapis" not in text)
+
+
 def main() -> int:
     test_dist_package_contents()
     test_codex_plugin_metadata_generated()
@@ -871,6 +937,11 @@ def main() -> int:
     test_highlight_with_language()
     test_highlight_without_language()
     test_highlight_without_pygments_dependency()
+    test_mermaid_color_mix_srgb_single_pct()
+    test_mermaid_color_mix_both_pct()
+    test_mermaid_normalize_strips_unsafe_features()
+    test_mermaid_lint_flags_unnormalized_svg()
+    test_mermaid_diagram_templates_normalized()
     print()
     print(f"Passed: {_PASS} | Failed: {_FAIL}")
     return 0 if _FAIL == 0 else 1

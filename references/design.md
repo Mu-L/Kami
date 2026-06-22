@@ -1289,6 +1289,31 @@ When the product site grows docs, help, or guide pages (see «Product site syste
 - Prev/next pager: quiet borderless text links, not bordered cards. A 2-column grid with one thin top divider; each link is a `--latin-ui` uppercase "Previous"/"Next" eyebrow over a brand serif title, `border: 0; background: none`. The next link aligns right (resets left on phone). Press feedback via `:active { opacity: 0.6 }`. A bordered card here reads heavy on mobile.
 - Mobile (tablet breakpoint): the sidebar un-sticks (`position: static`) and collapses to a horizontal scroll strip (`display: flex; overflow-x: auto; scrollbar-width: none`) with the active rail moved to `border-bottom`; the TOC is hidden. Reuse the landing page's existing breakpoints; do not invent a new ladder.
 
+## 12. Mermaid diagrams
+
+Mermaid text is turned into Kami-styled diagrams via beautiful-mermaid plus
+`scripts/mermaid_normalize.py`. The theme maps beautiful-mermaid's seven color
+roles onto the canonical palette (single source: `references/mermaid-theme.json`,
+kept in sync with `tokens.json`):
+
+| role | token | hex |
+|------|-------|-----|
+| `bg` | `--parchment` | `#f5f4ed` |
+| `fg` | `--near-black` | `#141413` |
+| `line` | `--olive` | `#504e49` |
+| `accent` | `--brand` | `#1B365D` |
+| `muted` | `--stone` | `#6b6a64` |
+| `surface` | `--ivory` | `#faf9f5` |
+| `border` | `--border` | `#e8e6dc` |
+
+Same invariants as every other surface: parchment canvas, one chromatic accent
+(ink-blue marks the focal element only), warm neutrals for everything else, serif
+text with CJK fallback. The normalizer resolves beautiful-mermaid's `color-mix()`
+derivations to static hex, so derived shades (e.g. `#dad9d3`) stay warm and never
+introduce cool grays. PDF supports flowchart / state / sequence / class / ER;
+`xychart-beta` is browser-only (it uses `<style>` class selectors WeasyPrint will
+not apply). Full pipeline and rationale in `references/mermaid.md`.
+
 ### Responsive screenshot verification
 
 Before declaring any screen change done, screenshot the real rendered surface; a type check or CSS-balance read is not enough. Several regressions (early wraps, orphaned separator dots, table overflow, missed pages) are invisible in source and only show in the render.

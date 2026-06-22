@@ -104,6 +104,10 @@ DIAGRAM_TARGETS: dict[str, str] = {
     "diagram-venn":          "venn.html",
     "diagram-candlestick":   "candlestick.html",
     "diagram-waterfall":     "waterfall.html",
+    # Mermaid-sourced (beautiful-mermaid + scripts/mermaid_normalize.py)
+    "diagram-sequence":      "sequence.html",
+    "diagram-class":         "class.html",
+    "diagram-er":            "er.html",
 }
 
 
