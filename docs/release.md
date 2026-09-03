@@ -26,14 +26,16 @@ screenshots. Everyday template, script, and site work does not need it.
 
 ## Part 2 · Release flow
 
-- `bash scripts/package-skill.sh` writes the tracked `dist/kami.zip` with a top-level
-  `kami/` skill folder, and its audit gate excludes large TsangerJinKai / Source Han
-  Serif K fonts plus showcase, demo, and example assets.
-- Commit `dist/kami.zip` with the release change. Any changed package gets a new
-  version tag; do not replace a published version with different payloads.
+- `bash scripts/package-skill.sh dist/kami.zip` packages `skills/kami` as a top-level
+  `kami/` skill folder; its audit gate rejects large fonts, rendered examples, tests,
+  and cache files. `dist/` is ignored: the archive is never tracked, `release.yml`
+  builds it from the tagged commit and uploads it.
+- Any change under `skills/kami` that users should receive on Claude Desktop needs a
+  new version tag; do not replace a published version with different payloads.
 - Verify the published asset by content, not by page text: download the uploaded
-  `kami.zip` and compare ZIP entry names plus per-entry SHA-256 digests against local
-  `dist/kami.zip`. File size or container SHA alone proves nothing.
+  `kami.zip` and compare ZIP entry names plus per-entry SHA-256 digests against a
+  fresh local `bash scripts/package-skill.sh` build of the same commit. File size or
+  container SHA alone proves nothing.
 - README and public site download links point at
   `https://github.com/tw93/kami/releases/latest/download/kami.zip`. Even small package
   changes require a new patch version so update checks and downloaded contents agree.
@@ -56,14 +58,13 @@ screenshots. Everyday template, script, and site work does not need it.
 - The release workflow enforces the same contract before it can create an asset:
   `TAG == V$(cat VERSION)`, the tag resolves to the checked-out commit, the commit is
   reachable from `origin/main`, an exact-SHA `check.yml` run from a `main` push is
-  complete and successful, and the rebuilt archive has the same entry names and
-  per-entry SHA-256 payloads as tracked `dist/kami.zip`.
+  complete and successful, and, when a same-version asset already exists, the rebuilt
+  archive has the same entry names and per-entry SHA-256 payloads as the published one.
   Immediately before upload, it also confirms the remote tag still resolves to the
   reviewed SHA. Keep these as hard gates; a manual dispatch is not an override.
 - Create a version tag only when the maintainer explicitly asks for a versioned
-  release, and tag the commit that already contains the final refreshed
-  `dist/kami.zip`. Never tag a source-only commit and refresh the archive afterward.
-- On tag push, `.github/workflows/release.yml` builds and attaches `dist/kami.zip`,
+  release, and tag the commit whose `skills/kami` is the final content.
+- On tag push, `.github/workflows/release.yml` builds the archive from that commit and attaches it,
   creates the release if missing, refuses to replace a different same-version asset,
   and adds and verifies the house-style reactions. An idempotent rerun may keep an
   existing asset only when its entry names and payloads are identical. Do not

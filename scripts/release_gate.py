@@ -165,7 +165,7 @@ def main(argv: list[str] | None = None) -> int:
 
     print(f"OK: release identity matches {args.tag} at {head_sha}")
     if args.tracked_archive:
-        print("OK: candidate archive payloads match tracked dist/kami.zip")
+        print("OK: candidate archive payloads match the reference archive")
     return 0
 
 

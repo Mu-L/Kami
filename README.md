@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/images/logo.svg" width="120" />
+  <img src="skills/kami/assets/images/logo.svg" width="120" />
   <h1>Kami</h1>
   <p><b>Good content deserves good paper.</b></p>
   <a href="https://github.com/tw93/kami/stargazers"><img src="https://img.shields.io/github/stars/tw93/kami?style=flat-square" alt="Stars"></a>
@@ -23,44 +23,44 @@ Real PDFs from one constraint set, across templates and languages. Click any pre
 <table>
 <tr>
   <td align="center" width="25%">
-    <a href="assets/demos/demo-musk-resume.pdf"><img src="assets/demos/demo-musk-resume.png" alt="Founder resume"></a>
+    <a href="site/assets/demos/demo-musk-resume.pdf"><img src="site/assets/demos/demo-musk-resume.png" alt="Founder resume"></a>
     <br><b>Resume</b> · English
     <br><sub>Founder resume, 2 pages</sub>
   </td>
   <td align="center" width="25%">
-    <a href="assets/demos/demo-kami-print.pdf"><img src="assets/demos/demo-kami-print.png" alt="Kami print one-pager"></a>
+    <a href="site/assets/demos/demo-kami-print.pdf"><img src="site/assets/demos/demo-kami-print.png" alt="Kami print one-pager"></a>
     <br><b>One-Pager</b> · 中文
     <br><sub>Kami 介绍 · 白底打印版</sub>
   </td>
   <td align="center" width="25%">
-    <a href="assets/demos/demo-tesla.pdf"><img src="assets/demos/demo-tesla.png" alt="Tesla equity report"></a>
+    <a href="site/assets/demos/demo-tesla.pdf"><img src="site/assets/demos/demo-tesla.png" alt="Tesla equity report"></a>
     <br><b>Equity Report</b> · 中文
     <br><sub>Tesla Q1 2026 财报点评</sub>
   </td>
   <td align="center" width="25%">
-    <a href="assets/demos/demo-agent-slides.pdf"><img src="assets/demos/demo-agent-slides.png" alt="Agent keynote slides" /></a>
+    <a href="site/assets/demos/demo-agent-slides.pdf"><img src="site/assets/demos/demo-agent-slides.png" alt="Agent keynote slides" /></a>
     <br><b>Slides</b> · English
     <br><sub>Agent keynote, 8 slides</sub>
   </td>
 </tr>
 <tr>
   <td align="center" width="25%">
-    <a href="assets/demos/demo-mole.pdf"><img src="assets/demos/demo-mole.png" alt="Mole product brief"></a>
+    <a href="site/assets/demos/demo-mole.pdf"><img src="site/assets/demos/demo-mole.png" alt="Mole product brief"></a>
     <br><b>One-Pager</b> · English
     <br><sub>Mole product brief, 1 page</sub>
   </td>
   <td align="center" width="25%">
-    <a href="assets/demos/demo-letter.pdf"><img src="assets/demos/demo-letter.png" alt="Recommendation letter"></a>
+    <a href="site/assets/demos/demo-letter.pdf"><img src="site/assets/demos/demo-letter.png" alt="Recommendation letter"></a>
     <br><b>Letter</b> · 中文
     <br><sub>推荐信, 1 页</sub>
   </td>
   <td align="center" width="25%">
-    <a href="assets/demos/demo-changelog.pdf"><img src="assets/demos/demo-changelog.png" alt="Mole release notes"></a>
+    <a href="site/assets/demos/demo-changelog.pdf"><img src="site/assets/demos/demo-changelog.png" alt="Mole release notes"></a>
     <br><b>Changelog</b> · English
     <br><sub>Mole v1.7.1 release notes</sub>
   </td>
   <td align="center" width="25%">
-    <a href="assets/demos/demo-kaku.pdf"><img src="assets/demos/demo-kaku.png" alt="Kaku portfolio"></a>
+    <a href="site/assets/demos/demo-kaku.pdf"><img src="site/assets/demos/demo-kaku.png" alt="Kaku portfolio"></a>
     <br><b>Portfolio</b> · 日本語
     <br><sub>Kaku ターミナル作品集 · 7 ページ</sub>
   </td>
@@ -91,7 +91,7 @@ codex plugin add kami@kami
 
 **Claude Desktop**: download the release asset [kami.zip](https://github.com/tw93/kami/releases/latest/download/kami.zip), not GitHub's source ZIP, open Customize > Skills > "+" > Create skill, and upload it. To update, click "..." on the skill card, choose Replace, and upload the latest ZIP.
 
-Large CJK fonts stay out of every package: in a repo checkout they load from local font files first, then jsDelivr CDN; in an installed skill, `scripts/ensure-fonts.sh` recovers missing Chinese or Korean fonts into the user font directory.
+Large CJK fonts stay out of every package: `scripts/ensure-fonts.sh` recovers missing Chinese or Korean fonts into the user font directory, and in a repository checkout it copies the tracked fonts into the skill so templates load them locally before falling back to the jsDelivr CDN.
 
 Kami also runs a quiet version check at most once a day and tells you in chat when a newer published release is out. It writes a marker in the local XDG cache directory, then resolves GitHub's latest public release; it uploads no user document or task content and fails silently when offline or when no cache home is available.
 
@@ -108,7 +108,7 @@ Example prompts by language:
 
 **Brand profile** (optional)
 
-Create `~/.config/kami/brand.md` to persist identity, brand, defaults, and writing habits. See [brand.example.md](references/brand.example.md) for a full template.
+Create `~/.config/kami/brand.md` to persist identity, brand, defaults, and writing habits. See [brand.example.md](skills/kami/references/brand.example.md) for a full template.
 
 The file has YAML frontmatter for structured fields like name, role, email, brand color, language, page size, and tone, plus a Markdown body for freeform notes. Kami treats it as the lowest-resolution context: applied only when the current request is ambiguous, and always overridable by what the specific document needs. The goal is to feel familiar across your work without making every output look the same.
 
@@ -121,14 +121,14 @@ Warm parchment canvas `#f5f4ed`, ink blue `#1B365D` as the sole accent, serif ca
 - **Slides.** Three rendering paths: WeasyPrint HTML to PDF by default, python-pptx for editable PPTX on request, and a Marp variant in `assets/templates/marp/` for Markdown-first decks.
 - **Code.** Pygments-based syntax highlighting when `Pygments` is installed; without it, PDFs still render and code stays monochrome.
 - **Verification.** Deterministic quality gates: per-type content schemas validate structure before layout, an optional structured brief records the artifact's target and acceptance boundary, a coverage check confirms every fact survives into the filled page, and a visual pass exports page images against a fixed review checklist.
-- **MCP.** A zero-dependency MCP server (`scripts/mcp_server.py`) exposes capability diagnosis, render, structured check, and screenshot tools, so any MCP-capable agent can drive Kami as an engine without loading the full skill prompt. Render only trusted local HTML: referenced file, HTTP, and HTTPS resources load with the MCP process's permissions.
-- **Print.** Parchment is the default canvas; an opt-in white-paper variant flips any document to a white background for home or office printers, sinking the warmth into cards and tables so the hierarchy still reads. The [one-page Kami intro](assets/demos/demo-kami-print.pdf) (Chinese) is rendered with this variant; recipe in [production.md](references/production.md).
+- **MCP.** A zero-dependency MCP server (`skills/kami/scripts/mcp_server.py`) exposes capability diagnosis, render, structured check, and screenshot tools, so any MCP-capable agent can drive Kami as an engine without loading the full skill prompt. Render only trusted local HTML: referenced file, HTTP, and HTTPS resources load with the MCP process's permissions.
+- **Print.** Parchment is the default canvas; an opt-in white-paper variant flips any document to a white background for home or office printers, sinking the warmth into cards and tables so the hierarchy still reads. The [one-page Kami intro](site/assets/demos/demo-kami-print.pdf) (Chinese) is rendered with this variant; recipe in [production.md](skills/kami/references/production.md).
 
 Kami picks the right variant based on the language you write in.
 
 **Fonts**: Each language uses a single serif font for the entire page. Chinese: TsangerJinKai02. Japanese: YuMincho. Korean: Source Han Serif K. English: Charter. See [License](#license) for font terms.
 
-Full spec: [design.md](references/design.md). Cheatsheet: [CHEATSHEET.md](CHEATSHEET.md).
+Full spec: [design.md](skills/kami/references/design.md). Cheatsheet: [CHEATSHEET.md](skills/kami/CHEATSHEET.md).
 
 ## Beyond Documents
 
@@ -137,22 +137,22 @@ One constraint set, applied past the page: it lays out deployable websites and b
 <table>
 <tr>
   <td align="center" width="25%" valign="top">
-    <a href="https://kami.tw93.fun"><img src="assets/showcase/kami-landing.png" alt="Kami landing page" height="150"></a>
+    <a href="https://kami.tw93.fun"><img src="site/assets/showcase/kami-landing.png" alt="Kami landing page" height="150"></a>
     <br><b>Kami</b> · landing page
     <br><sub>Design system homepage</sub>
   </td>
   <td align="center" width="25%" valign="top">
-    <a href="https://mole.fit"><img src="assets/showcase/mole-landing.png" alt="Mole landing page" height="150"></a>
+    <a href="https://mole.fit"><img src="site/assets/showcase/mole-landing.png" alt="Mole landing page" height="150"></a>
     <br><b>Mole</b> · landing page
     <br><sub>macOS system utility</sub>
   </td>
   <td align="center" width="25%" valign="top">
-    <img src="assets/illustrations/travel-spatialvla.png" alt="SpatialVLA architecture redraw" height="150">
+    <img src="site/assets/illustrations/travel-spatialvla.png" alt="SpatialVLA architecture redraw" height="150">
     <br><b>Architecture redraw</b> · English
     <br><sub>SpatialVLA Figure 1, schematic</sub>
   </td>
   <td align="center" width="25%" valign="top">
-    <img src="assets/illustrations/travel-tesla-optimus.png" alt="Tesla Optimus patent overview" height="150">
+    <img src="site/assets/illustrations/travel-tesla-optimus.png" alt="Tesla Optimus patent overview" height="150">
     <br><b>Evidence layout</b> · 中文
     <br><sub>Tesla Optimus 专利图一览</sub>
   </td>
