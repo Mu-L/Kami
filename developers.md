@@ -22,7 +22,7 @@ codex plugin marketplace add tw93/kami
 codex plugin add kami@kami
 
 # Generic agents that read ~/.agents/
-npx skills add tw93/kami/plugins/kami -a universal -g -y
+npx skills add tw93/kami/plugins/kami -a claude-code codex cursor -g -y
 
 # MCP client, from a checkout
 claude mcp add kami -- python3 <checkout>/scripts/mcp_server.py

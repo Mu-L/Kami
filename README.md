@@ -69,44 +69,29 @@ Real PDFs from one constraint set, across templates and languages. Click any pre
 
 ## Install
 
-**Claude Code**, v2.1.142 or newer
+**Claude Code, Codex, Cursor, and other agents**
 
 ```bash
-/plugin marketplace add tw93/kami
-/plugin install kami@kami
+npx skills add tw93/kami/plugins/kami -a claude-code codex cursor -g -y
 ```
 
-The marketplace points Claude Code at the generated lightweight plugin bundle, not the whole website and release archive tree.
+One copy lands in `~/.agents/skills`, the shared skills directory. Claude Code is symlinked in; Codex, Cursor, and every other agent that reads that directory picks Kami up as `/kami`. The `plugins/kami` path is the lightweight skill bundle; the repo root is also the website, so a bare `tw93/kami` would install the site. Update with `npx skills update -g -y`.
 
-**Codex plugin marketplace**
+**Host plugin**, if you prefer the host's own update command (namespaced as `/kami:kami`; Claude Code v2.1.142 or newer)
 
 ```bash
+# Claude Code (update: claude plugin update kami)
+/plugin marketplace add tw93/kami
+/plugin install kami@kami
+
+# Codex (update: codex plugin marketplace upgrade kami, then codex plugin add kami@kami)
 codex plugin marketplace add tw93/kami
 codex plugin add kami@kami
 ```
 
-This installs Kami as a Codex plugin from the repo marketplace, so future updates can use `codex plugin marketplace upgrade kami` followed by `codex plugin add kami@kami`.
+**Claude Desktop**: download the release asset [kami.zip](https://github.com/tw93/kami/releases/latest/download/kami.zip), not GitHub's source ZIP, open Customize > Skills > "+" > Create skill, and upload it. To update, click "..." on the skill card, choose Replace, and upload the latest ZIP.
 
-**Generic agents** for tools that read from `~/.agents/`
-
-```bash
-npx skills add tw93/kami/plugins/kami -a universal -g -y
-```
-
-The plugin path exposes the generated lightweight skill bundle. A bare `tw93/kami` would install only `SKILL.md`, because the repo root doubles as the website source and the `skills` CLI treats a root-level skill as a single file.
-
-**Claude Desktop**
-
-Download the release asset [kami.zip](https://github.com/tw93/kami/releases/latest/download/kami.zip), not GitHub's source-code ZIP. Open Customize > Skills > "+" > Create skill, and upload the ZIP directly, no need to unzip.
-
-The ZIP is lightweight and contains a `kami/` skill folder. Large CJK fonts are excluded from the package: in a repo checkout they load from local font files first, then jsDelivr CDN; in an installed skill, `scripts/ensure-fonts.sh` recovers missing Chinese or Korean fonts into the user font directory.
-
-**Update**
-
-- Claude Code: `claude plugin update kami`
-- Codex: `codex plugin marketplace upgrade kami`, then `codex plugin add kami@kami` to refresh the installed snapshot
-- Claude Desktop: download the latest [kami.zip](https://github.com/tw93/kami/releases/latest/download/kami.zip), click "..." on the skill card, choose Replace, upload
-- Generic agents: re-run the `npx skills add tw93/kami/plugins/kami -a universal -g -y` command, which overwrites the existing copy. Avoid `npx skills update` for now: it can mis-detect repo subpath installs while the repo root also has `SKILL.md` (vercel-labs/skills#1517).
+Large CJK fonts stay out of every package: in a repo checkout they load from local font files first, then jsDelivr CDN; in an installed skill, `scripts/ensure-fonts.sh` recovers missing Chinese or Korean fonts into the user font directory.
 
 Kami also runs a quiet version check at most once a day and tells you in chat when a newer published release is out. It writes a marker in the local XDG cache directory, then resolves GitHub's latest public release; it uploads no user document or task content and fails silently when offline or when no cache home is available.
 
