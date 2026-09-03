@@ -19,8 +19,9 @@ One repository, three top-level roles, and the install tools only ever copy the 
   as `kami/` for Claude Desktop; `plugins/kami/` is a generated copy of it for the
   Claude and Codex plugin marketplaces. Every skill-relative path in `SKILL.md`
   resolves inside this directory, so nothing here may reach up into the repo.
-- `site/` is kami.tw93.fun. Vercel's Root Directory is `site`, so only this tree
-  deploys. It carries the pages, `styles.css`, `llms.txt`, `robots.txt`,
+- `site/` is kami.tw93.fun. The Vercel project's Root Directory is `site` (project
+  setting, not a file), so only this tree deploys and `site/vercel.json` is the only
+  Vercel config. It carries the pages, `styles.css`, `llms.txt`, `robots.txt`,
   `sitemap.xml`, `vercel.json`, `.well-known/`, `feeds/`, and the heavy showcase and
   demo assets. Skill facts it shows (`SKILL.md`, the discovery files) are generated
   into it, never hand-copied.
