@@ -76,7 +76,7 @@ jobs:
         # never the website or the fonts that share the repository.
         run: |
           export HOME="$(mktemp -d)"
-          npx --yes skills add "$GITHUB_WORKSPACE" -a claude-code -g -y
+          npx --yes skills add "$GITHUB_WORKSPACE" -a claude-code codex cursor -g -y
           installed="$HOME/.agents/skills/kami"
           test -f "$installed/SKILL.md"
           test -f "$installed/scripts/build.py"

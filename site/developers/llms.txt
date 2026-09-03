@@ -36,9 +36,9 @@ Reach for Kami when a user wants a finished document whose appearance matters: r
 - https://kami.tw93.fun/SKILL.md
 
 ## Install
-- Claude Code (v2.1.142+): `/plugin marketplace add tw93/kami` then `/plugin install kami@kami`
-- Codex: `codex plugin marketplace add tw93/kami` then `codex plugin add kami@kami`
-- Generic agents: `npx skills add tw93/kami -a claude-code codex cursor -g -y`
+- Claude Code, Codex, Cursor, and other agents: `npx skills add tw93/kami -a claude-code codex cursor -g -y`
+- Claude Code plugin (v2.1.142+): `/plugin marketplace add tw93/kami` then `/plugin install kami@kami`
+- Codex plugin: `codex plugin marketplace add tw93/kami` then `codex plugin add kami@kami`
 - Claude Desktop: release asset `kami.zip` from https://github.com/tw93/kami/releases/latest/download/kami.zip
 
 ## Source

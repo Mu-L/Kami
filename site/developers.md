@@ -13,16 +13,16 @@ The integration surface is local: an MCP server for tool calls, JSON content sch
 ## Install
 
 ```
-# Claude Code (v2.1.142+)
+# Claude Code, Codex, Cursor, and other agents
+npx skills add tw93/kami -a claude-code codex cursor -g -y
+
+# Claude Code plugin (v2.1.142+)
 /plugin marketplace add tw93/kami
 /plugin install kami@kami
 
-# Codex plugin marketplace
+# Codex plugin
 codex plugin marketplace add tw93/kami
 codex plugin add kami@kami
-
-# Generic agents that read ~/.agents/
-npx skills add tw93/kami -a claude-code codex cursor -g -y
 
 # MCP client, from a checkout
 claude mcp add kami -- python3 <checkout>/skills/kami/scripts/mcp_server.py

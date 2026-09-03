@@ -264,16 +264,16 @@
       <h2 class="section-title">安装与调用</h2>
       <p class="section-lede">直接告诉 Claude 你要什么，比如「帮我排版一份白皮书」「做一份简历」「帮我做一份作品集」，skill 会自动触发，无需斜杠命令。</p>
     </div>
-<pre class="code code-wrap"><span class="c"># Claude Code (v2.1.142+)</span>
+<pre class="code code-wrap"><span class="c"># Claude Code、Codex、Cursor 及其他 Agent</span>
+npx skills add tw93/kami -a claude-code codex cursor -g -y
+
+<span class="c"># Claude Code 插件 (v2.1.142+)</span>
 /plugin marketplace add tw93/kami
 /plugin install kami@kami
 
-<span class="c"># Codex (CLI / Desktop)</span>
+<span class="c"># Codex 插件</span>
 codex plugin marketplace add tw93/kami
 codex plugin add kami@kami
-
-<span class="c"># 通用 Agent</span>
-npx skills add tw93/kami -a claude-code codex cursor -g -y
 
 <span class="c"># Claude Desktop</span>
 下载 <a href="https://github.com/tw93/kami/releases/latest/download/kami.zip" style="color:var(--brand); text-decoration:none;">kami.zip</a>，在 Customize &gt; Skills &gt; "+" &gt; Create skill 中上传</pre>

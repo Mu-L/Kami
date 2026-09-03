@@ -276,16 +276,16 @@
       <h2 class="section-title">설치 및 사용</h2>
       <p class="section-lede">Claude에게 필요한 것을 말하세요. 예를 들어 "이력서 만들어 줘", "스타트업 원페이저 만들어 줘", "발표용 슬라이드 디자인해 줘". 스킬이 자동으로 실행되며, 슬래시 명령어가 필요 없습니다.</p>
     </div>
-<pre class="code code-wrap"><span class="c"># Claude Code (v2.1.142+)</span>
+<pre class="code code-wrap"><span class="c"># Claude Code, Codex, Cursor 및 기타 에이전트</span>
+npx skills add tw93/kami -a claude-code codex cursor -g -y
+
+<span class="c"># Claude Code 플러그인 (v2.1.142+)</span>
 /plugin marketplace add tw93/kami
 /plugin install kami@kami
 
-<span class="c"># Codex (CLI / Desktop)</span>
+<span class="c"># Codex 플러그인</span>
 codex plugin marketplace add tw93/kami
 codex plugin add kami@kami
-
-<span class="c"># 범용 에이전트</span>
-npx skills add tw93/kami -a claude-code codex cursor -g -y
 
 <span class="c"># Claude Desktop</span>
 <a href="https://github.com/tw93/kami/releases/latest/download/kami.zip" style="color:var(--brand); text-decoration:none;">kami.zip</a>을 내려받아 Customize &gt; Skills &gt; "+" &gt; Create skill에서 업로드</pre>

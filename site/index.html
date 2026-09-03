@@ -287,16 +287,16 @@
       <h2 class="section-title">Install &amp; Invoke</h2>
       <p class="section-lede">Tell Claude what you need, for example "build me a resume", "make a one-pager for my startup", or "design a slide deck for my talk". The skill auto-triggers, no slash command needed.</p>
     </div>
-<pre class="code code-wrap"><span class="c"># Claude Code (v2.1.142+)</span>
+<pre class="code code-wrap"><span class="c"># Claude Code, Codex, Cursor, and other agents</span>
+npx skills add tw93/kami -a claude-code codex cursor -g -y
+
+<span class="c"># Claude Code plugin (v2.1.142+)</span>
 /plugin marketplace add tw93/kami
 /plugin install kami@kami
 
-<span class="c"># Codex (CLI / Desktop)</span>
+<span class="c"># Codex plugin</span>
 codex plugin marketplace add tw93/kami
 codex plugin add kami@kami
-
-<span class="c"># Universal agents</span>
-npx skills add tw93/kami -a claude-code codex cursor -g -y
 
 <span class="c"># Claude Desktop</span>
 Download <a href="https://github.com/tw93/kami/releases/latest/download/kami.zip" style="color:var(--brand); text-decoration:none;">kami.zip</a>, then upload it in Customize &gt; Skills &gt; "+" &gt; Create skill</pre>
