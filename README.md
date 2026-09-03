@@ -72,10 +72,10 @@ Real PDFs from one constraint set, across templates and languages. Click any pre
 **Claude Code, Codex, Cursor, and other agents**
 
 ```bash
-npx skills add tw93/kami/plugins/kami -a claude-code codex cursor -g -y
+npx skills add tw93/kami -a claude-code codex cursor -g -y
 ```
 
-One copy lands in `~/.agents/skills`, the shared skills directory. Claude Code is symlinked in; Codex, Cursor, and every other agent that reads that directory picks Kami up as `/kami`. The `plugins/kami` path is the lightweight skill bundle; the repo root is also the website, so a bare `tw93/kami` would install the site. Update with `npx skills update -g -y`.
+One copy lands in `~/.agents/skills`, the shared skills directory. Claude Code is symlinked in; Codex, Cursor, and every other agent that reads that directory picks Kami up as `/kami`. Update with `npx skills update -g -y`.
 
 **Host plugin**, if you prefer the host's own update command (namespaced as `/kami:kami`; Claude Code v2.1.142 or newer)
 

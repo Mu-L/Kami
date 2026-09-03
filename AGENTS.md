@@ -8,6 +8,33 @@ packaged skill archive. `SKILL.md` is the runtime manual for producing a documen
 This file is the maintenance guide for changing the repository itself, and it records
 the traps that a fresh read of the code does not reveal.
 
+## Layout
+
+One repository, three top-level roles, and the install tools only ever copy the first:
+
+- `skills/kami/` is the skill and the only thing users install: `SKILL.md`,
+  `CHEATSHEET.md`, `VERSION`, `LICENSE`, `references/`, `scripts/`, and the light
+  `assets/` (templates, diagrams, logo, the two small font files). `npx skills add
+  tw93/kami` copies exactly this directory; `bash scripts/package-skill.sh` zips it
+  as `kami/` for Claude Desktop; `plugins/kami/` is a generated copy of it for the
+  Claude and Codex plugin marketplaces. Every skill-relative path in `SKILL.md`
+  resolves inside this directory, so nothing here may reach up into the repo.
+- `site/` is kami.tw93.fun. Vercel's Root Directory is `site`, so only this tree
+  deploys. It carries the pages, `styles.css`, `llms.txt`, `robots.txt`,
+  `sitemap.xml`, `vercel.json`, `.well-known/`, `feeds/`, and the heavy showcase and
+  demo assets. Skill facts it shows (`SKILL.md`, the discovery files) are generated
+  into it, never hand-copied.
+- The root holds repository tooling only: `scripts/` (`build_metadata.py`,
+  `package-skill.sh`, `release_gate.py`, `draft-release-notes.py`, `tests/`),
+  `assets/fonts/` (the commercial TTFs used by checkout renders; templates fall back
+  to jsDelivr and `ensure-fonts.sh` when they are absent), `assets/examples/`
+  (ignored render output), `docs/`, and `.github/`.
+
+Run skill-side commands from `skills/kami/` (`cd skills/kami && python3
+scripts/build.py --check`); the paths below are written from that directory unless
+they start with `scripts/build_metadata.py`, `scripts/package-skill.sh`,
+`scripts/release_gate.py`, or `scripts/tests/`, which live at the root.
+
 ## Repository Map
 
 Only the entries whose role is not obvious from the filename:
@@ -42,37 +69,40 @@ Only the entries whose role is not obvious from the filename:
   `kami_templates` / `kami_doctor` / `kami_render` / `kami_check` /
   `kami_screenshot`, so an MCP-capable agent can diagnose, render, and verify
   without reading `SKILL.md`. Register
-  with `claude mcp add kami -- python3 <checkout>/scripts/mcp_server.py`.
+  with `claude mcp add kami -- python3 <checkout>/skills/kami/scripts/mcp_server.py`.
 - `scripts/math_render.py`, `scripts/mathjax_svg.js`, `scripts/ensure_mathjax.sh`,
   `scripts/mathjax-runtime/` - strict LaTeX to MathJax SVG; `render.py` imports
   `math_render`. This is the only Node dependency (Node 20 or 22+, refused otherwise),
   installed on demand by `ensure_mathjax.sh` from the tracked `package-lock.json`;
   all four ship in the package allowlist.
 - `scripts/site_facts.py` - public-site fact drift checks (install commands, version,
-  template and diagram counts across `index*.html`, `README.md`, `llms.txt`), wired
-  into `build.py --check`.
+  template and diagram counts across `site/index*.html`, the root `README.md`,
+  `site/llms.txt`), wired into `build.py --check`; it resolves those files through
+  `shared.REPO_ROOT` / `shared.SITE_ROOT` and skips itself in an installed skill.
 - `scripts/check-update.sh` - quiet daily update check invoked from `SKILL.md`;
   writes a local cache marker, then resolves the latest published GitHub Release
   at most once per day. It uploads no user document or task content and stays
   silent on failure.
-- `assets/showcase/` - README and public-site screenshots only. `assets/demos/` -
-  README showcase demos. `scripts/package-skill.sh` excludes both from the ZIP.
+- `site/assets/showcase/` - README and public-site screenshots only.
+  `site/assets/demos/` - README showcase demos. Neither is part of the skill.
 - `assets/diagrams/src/*.mmd` - Mermaid source of the sequence / class / er diagrams.
   `assets/templates/marp/` - the Markdown-first Marp deck variant.
-- `dist/kami.zip` - **tracked** release archive, committed with release changes.
-- `plugins/kami/`, `.claude-plugin/marketplace.json`, and
-  `.agents/plugins/marketplace.json` are **generated**; see Generated Mirrors below.
-- Public site surface: `index.html` plus `index-zh|en|ja|ko|tw.html`, the English-only
-  prose pages `developers|about|contact|privacy.html`, `styles.css`, `llms.txt`,
-  `robots.txt`, `sitemap.xml`, `vercel.json`. `styles.css` is Kami's own site shell
+- `dist/` is ignored. The release archive is built by `release.yml` from
+  `skills/kami` and uploaded as a release asset; nothing tracks it.
+- `plugins/kami/`, `.claude-plugin/marketplace.json`,
+  `.agents/plugins/marketplace.json`, and the site's discovery files are
+  **generated**; see Generated Mirrors below.
+- Public site surface under `site/`: `index.html` plus `index-zh|en|ja|ko|tw.html`,
+  the English-only prose pages `developers|about|contact|privacy.html`, `styles.css`,
+  `llms.txt`, `robots.txt`, `sitemap.xml`, `vercel.json`. `styles.css` is Kami's own site shell
   (language switcher, gallery, responsive behavior, `.hero.doc` / `.prose` for the
   prose pages); generic template rules never belong there.
-- Agent-facing site surface: `index.md` (Markdown twin of the homepage; `vercel.json`
+- Agent-facing site surface, also under `site/`: `index.md` (Markdown twin of the homepage; `vercel.json`
   *redirects* `/` here for `Accept: text/markdown` and `/?mode=agent`, because Vercel
   applies `rewrites` only after the filesystem and `/` always matches `index.html`),
   `developers|about|contact|privacy.md`, `developers/llms.txt`, and the generated
   `.well-known/agent-skills/index.json`, `.well-known/mcp/server-card.json`,
-  `feeds/catalog.jsonld`, `schemamap.xml`. Every new prose page needs its `.md` twin,
+  `feeds/catalog.jsonld`, `schemamap.xml`, `SKILL.md` (served at `/SKILL.md`). Every new prose page needs its `.md` twin,
   a `rewrites` entry for the extensionless URL, and a `sitemap.xml` row.
   The `has`-conditioned redirects and the `Link` headers are only observable on a
   deploy: verify them with `curl -sI` against the preview URL, never locally.
@@ -91,14 +121,16 @@ map. Read it instead of trusting any copy; hand-maintained lists here have gone 
 before. The commands it does not cover:
 
 ```bash
-python3 scripts/build_metadata.py            # regenerate plugin mirror + marketplace metadata
+# from the repository root
+python3 scripts/build_metadata.py            # regenerate plugins/kami, marketplaces, site discovery files
 python3 scripts/build_metadata.py --check    # drift check for the same
-bash scripts/package-skill.sh                # build the tracked dist/kami.zip
+bash scripts/package-skill.sh dist/kami.zip  # build the Claude Desktop archive from skills/kami
+python3 scripts/tests/test_build.py          # full test suite
+python3 scripts/draft-release-notes.py V1.4.0..HEAD --version V1.4.1 --title "Steadier Hand"
+# from skills/kami
 bash scripts/ensure-fonts.sh                 # recover missing or truncated CJK fonts
 python3 scripts/mcp_server.py                # MCP stdio server (render / check / screenshot)
 python3 scripts/mermaid_normalize.py raw.svg -o clean.svg
-python3 scripts/draft-release-notes.py V1.4.0..HEAD --version V1.4.1 --title "Steadier Hand"
-python3 scripts/tests/test_build.py          # zero-dependency test suite
 ```
 
 ## Working Rules
@@ -142,13 +174,14 @@ python3 scripts/tests/test_build.py          # zero-dependency test suite
   and `ERROR:` for script status text.
 - Do not use em dashes (U+2014) in repository docs, generated documents, template
   comments, or site copy; use colons, commas, periods, or parentheses. Self-check:
-  `grep -rn "$(printf '\342\200\224')" README.md llms.txt index*.html`. Teaching
+  `grep -rn "$(printf '\342\200\224')" README.md site/llms.txt site/index*.html`. Teaching
   counter-examples inside `references/anti-patterns.md` are exempt; its rule #28
   covers the generated-document side.
 - For hosted-site or public-landing work, separate generic template work from Kami's
   own website first. Generic behavior lives in `assets/templates/landing-page*` and
-  `references/`; Kami site facts live across `index*.html`, `styles.css`, `README.md`,
-  `llms.txt`, `robots.txt`, `sitemap.xml`, and `vercel.json`. Public facts are wider
+  `references/`; Kami site facts live across `site/index*.html`, `site/styles.css`,
+  `README.md`, `site/llms.txt`, `site/robots.txt`, `site/sitemap.xml`, and
+  `site/vercel.json`. Public facts are wider
   than the hero: pricing, install path, version, release, support, analytics, FAQ, and
   positioning claims move together across pages, metadata, AI files, and download
   links. Do not leave a site-only analytics or tracking change contradicting the
@@ -173,19 +206,18 @@ python3 scripts/tests/test_build.py          # zero-dependency test suite
 
 ## Generated Mirrors
 
-`plugins/kami/`, `.claude-plugin/marketplace.json`, and `.agents/plugins/marketplace.json`
-are generated from the root sources. Edit the root file only, treat every
-`plugins/kami/skills/kami/...` path as a mirror, and let
-`python3 scripts/build_metadata.py --check` catch drift. Regenerate after changing
-`SKILL.md`, `CHEATSHEET.md`, `VERSION`, `references/`, `scripts/`, or shipped
-lightweight assets.
+`plugins/kami/` is a byte-for-byte copy of `skills/kami/` plus the two plugin
+manifests; `.claude-plugin/marketplace.json` and `.agents/plugins/marketplace.json`
+point at it. Edit `skills/kami/` only and let `python3 scripts/build_metadata.py
+--check` catch drift. Regenerate after any change under `skills/kami/`.
 
-The same generator owns the site's machine-readable discovery files:
+The same generator owns the site's machine-readable files under `site/`:
 `.well-known/agent-skills/index.json` (carries a SHA-256 digest of `SKILL.md`, so any
 skill edit changes it), `.well-known/mcp/server-card.json` (version plus the tool list
 parsed out of `scripts/mcp_server.py` without importing it), `feeds/catalog.jsonld`
-(built from `HTML_TEMPLATES` / `DIAGRAM_TEMPLATES`), and `schemamap.xml`. Never
-hand-edit these four; change the source and regenerate.
+(built from `HTML_TEMPLATES` / `DIAGRAM_TEMPLATES`), `schemamap.xml`, and `SKILL.md`
+(the copy served at `/SKILL.md`). Never hand-edit these; change the source and
+regenerate.
 
 Marketplace, plugin path, version, or install-path changes need runtime installation
 proof, not metadata proof. Claude Code: an isolated `HOME=/tmp/...` smoke with
@@ -200,18 +232,13 @@ proof, not metadata proof. Claude Code: an isolated `HOME=/tmp/...` smoke with
 - The shipped archive must be the output of `bash scripts/package-skill.sh`: a
   top-level `kami/` directory under a 6 MB ceiling. A hand-zipped checkout is
   rejected on size.
-- `scripts/package-skill.sh` packages from `git ls-files`, so an untracked new module
-  passes every local import and silently disappears from `dist/kami.zip`. When
-  splitting `build.py` or a package helper into new modules, confirm each new file is
-  tracked by Git and added to the scripts allowlist in `package-skill.sh` (its
-  coverage gate fails the build otherwise).
-- Any source change to `SKILL.md`, scripts, templates, reference JSON, workflows, or
-  package inputs must refresh and inspect `dist/kami.zip`. Package freshness is release
-  readiness, not later cleanup. It is also the precondition for telling a reporter a fix
-  has shipped: a commit on `main` reaches `npx skills add` and plugin installs right
-  away, but Claude Desktop users download
-  `releases/latest/download/kami.zip`, so name the channel that actually carries the fix
-  and confirm that asset was refreshed before saying "fixed, please update".
+- `scripts/package-skill.sh` packages `git ls-files skills/kami`, so an untracked new
+  module passes every local import and silently disappears from the archive. When
+  adding a runtime module, confirm it is tracked by Git before calling the change done.
+- The archive is not tracked. `release.yml` builds it from the tagged commit and
+  uploads it, so a fix reaches `npx skills add` and plugin installs on the next `main`
+  push but reaches Claude Desktop users only at the next release; name the channel
+  that actually carries the fix before saying "fixed, please update".
 - A versioned release must come from a commit reachable from `origin/main` with a
   successful exact-SHA `check.yml` run triggered by a `main` push. Published
   same-version assets are immutable in practice: a rerun may reuse `kami.zip` only
@@ -273,8 +300,8 @@ dependency.
   page numbers; do not reintroduce hand-written `.toc-page` spans. Running headers
   default to `h1`. If a filled document does not use `h1` for chapter titles, add
   `.running-title` to the element that should drive the header.
-- AI and public visibility spans `index*.html`, `llms.txt`, `robots.txt`,
-  `sitemap.xml`, FAQ JSON-LD, README install text, diagram counts, and release archive
+- AI and public visibility spans `site/index*.html`, `site/llms.txt`, `site/robots.txt`,
+  `site/sitemap.xml`, FAQ JSON-LD, README install text, diagram counts, and release archive
   links. Diagram count and names must stay aligned across `SKILL.md`, `CHEATSHEET.md`,
   `README.md`, `index*.html`, and `assets/diagrams/`.
 
@@ -318,13 +345,13 @@ maintenance side only.
 - MCP server changes: smoke the stdio protocol end to end (initialize, tools/list, one
   tools/call per changed tool) through a scripted stdin session, and check that output
   stays newline-delimited JSON with no stray prints on stdout.
-- Packaging changes: `bash scripts/package-skill.sh`, then `unzip -l dist/kami.zip` to
-  inspect for accidental large fonts, showcase screenshots, cache files, or a missing
-  new helper.
+- Packaging changes: `bash scripts/package-skill.sh dist/kami.zip`, then `unzip -l
+  dist/kami.zip` to inspect for accidental large fonts, cache files, or a missing new
+  helper.
 - Marketplace or plugin changes: `python3 scripts/build_metadata.py --check` plus the
   isolated install smoke described under Generated Mirrors.
-- Public site or AI visibility changes: check `index*.html`, README, `llms.txt`,
-  `robots.txt`, `sitemap.xml`, JSON-LD, FAQ, install links, and download links
+- Public site or AI visibility changes: check `site/index*.html`, README,
+  `site/llms.txt`, `site/robots.txt`, `site/sitemap.xml`, JSON-LD, FAQ, install links, and download links
   together, then serve the page and screenshot 375px / 1280px per locale, plus 320px
   when CTA width or mobile nav changes.
 
