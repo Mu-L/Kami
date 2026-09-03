@@ -26,8 +26,9 @@ One repository, three top-level roles, and the install tools only ever copy the 
   into it, never hand-copied.
 - The root holds repository tooling only: `scripts/` (`build_metadata.py`,
   `package-skill.sh`, `release_gate.py`, `draft-release-notes.py`, `tests/`),
-  `assets/fonts/` (the commercial TTFs used by checkout renders; templates fall back
-  to jsDelivr and `ensure-fonts.sh` when they are absent), `assets/examples/`
+  `assets/fonts/` (the commercial TTFs; run `bash skills/kami/scripts/ensure-fonts.sh`
+  once after cloning to copy them into the skill's ignored `assets/fonts/`, otherwise
+  templates fall back to jsDelivr), `assets/examples/`
   (ignored render output), `docs/`, and `.github/`.
 
 Run skill-side commands from `skills/kami/` (`cd skills/kami && python3
@@ -102,7 +103,7 @@ Only the entries whose role is not obvious from the filename:
   applies `rewrites` only after the filesystem and `/` always matches `index.html`),
   `developers|about|contact|privacy.md`, `developers/llms.txt`, and the generated
   `.well-known/agent-skills/index.json`, `.well-known/mcp/server-card.json`,
-  `feeds/catalog.jsonld`, `schemamap.xml`, `SKILL.md` (served at `/SKILL.md`). Every new prose page needs its `.md` twin,
+  `feeds/catalog.jsonld`, `schemamap.xml`, `kami-skill.md` (served at `/SKILL.md` through a rewrite; it must not be named `SKILL.md`, or the skills CLI installs the site). Every new prose page needs its `.md` twin,
   a `rewrites` entry for the extensionless URL, and a `sitemap.xml` row.
   The `has`-conditioned redirects and the `Link` headers are only observable on a
   deploy: verify them with `curl -sI` against the preview URL, never locally.
@@ -215,8 +216,8 @@ The same generator owns the site's machine-readable files under `site/`:
 `.well-known/agent-skills/index.json` (carries a SHA-256 digest of `SKILL.md`, so any
 skill edit changes it), `.well-known/mcp/server-card.json` (version plus the tool list
 parsed out of `scripts/mcp_server.py` without importing it), `feeds/catalog.jsonld`
-(built from `HTML_TEMPLATES` / `DIAGRAM_TEMPLATES`), `schemamap.xml`, and `SKILL.md`
-(the copy served at `/SKILL.md`). Never hand-edit these; change the source and
+(built from `HTML_TEMPLATES` / `DIAGRAM_TEMPLATES`), `schemamap.xml`, and
+`kami-skill.md` (the copy served at `/SKILL.md`). Never hand-edit these; change the source and
 regenerate.
 
 Marketplace, plugin path, version, or install-path changes need runtime installation

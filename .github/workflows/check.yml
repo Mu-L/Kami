@@ -106,4 +106,4 @@ jobs:
         # this reports a serif fallback and passes; it fails if the CJK body
         # ever lands on a sans or gets split across two families, which is how
         # a broken font install would otherwise ship looking merely "fine".
-        run: python3 skills/kami/scripts/build.py --check-fonts skills/kami/assets/examples/one-pager.pdf skills/kami/assets/examples/one-pager-ko.pdf skills/kami/assets/examples/resume.pdf
+        run: python3 skills/kami/scripts/build.py --check-fonts assets/examples/one-pager.pdf assets/examples/one-pager-ko.pdf assets/examples/resume.pdf

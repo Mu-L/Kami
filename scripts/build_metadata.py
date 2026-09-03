@@ -74,6 +74,10 @@ CLAUDE_PLUGIN_DESCRIPTION = (
 )
 
 SKILL_MIRROR_ROOT = Path("plugins/kami/skills/kami")
+SKILL_MIRROR_ALLOWED_FONT_FILES = {
+    "JetBrainsMono.woff2",
+    "LICENSE-SourceHanSerifK.txt",
+}
 SKILL_MIRROR_IGNORED_DIRS = {
     "examples",
     "__pycache__",
@@ -507,6 +511,8 @@ def should_include_skill_mirror_file(path: Path) -> bool:
         return False
     if path.suffix in SKILL_MIRROR_IGNORED_SUFFIXES:
         return False
+    if path.parts[:2] == ("assets", "fonts"):
+        return path.name in SKILL_MIRROR_ALLOWED_FONT_FILES
     return True
 
 
@@ -664,9 +670,11 @@ def main() -> int:
         ),
         (site_root / "feeds" / "catalog.jsonld", build_catalog_feed(skill_root)),
         (site_root / "schemamap.xml", build_schemamap()),
-        # The website serves the skill definition at /SKILL.md; it is a copy of
-        # the source, never edited in site/.
-        (site_root / "SKILL.md", skill_source.decode("utf-8")),
+        # The website serves the skill definition at /SKILL.md through a rewrite
+        # to this copy. It is deliberately not named SKILL.md: the skills CLI
+        # treats any SKILL.md one level below the repo root as an installable
+        # skill, and site/SKILL.md would win over skills/kami.
+        (site_root / "kami-skill.md", skill_source.decode("utf-8")),
     ]
 
     if args.check:
