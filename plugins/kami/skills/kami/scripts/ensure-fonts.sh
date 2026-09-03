@@ -6,6 +6,11 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_FONT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)/assets/fonts"
+# In a repository checkout the commercial fonts sit two levels up, outside the
+# skill directory, so installs stay light.
+if [ -d "$SCRIPT_DIR/../../../assets/fonts" ]; then
+  REPO_FONT_DIR="$(cd "$SCRIPT_DIR/../../../assets/fonts" && pwd)"
+fi
 
 # Download target lives OUTSIDE the skill directory on purpose.
 #

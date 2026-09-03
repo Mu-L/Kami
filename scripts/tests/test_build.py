@@ -27,9 +27,14 @@ import warnings
 import zipfile
 from pathlib import Path
 
-# Make scripts/ importable when running this file directly.
-ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT))
+# ROOT is the repository root; the skill lives under skills/kami and the
+# website under site/. Make both script directories importable directly.
+ROOT = Path(__file__).resolve().parent.parent.parent
+SKILL_ROOT = ROOT / "skills" / "kami"
+SITE_ROOT = ROOT / "site"
+REPO_ROOT = ROOT
+sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(SKILL_ROOT / "scripts"))
 
 from build import (  # noqa: E402
     DIAGRAM_TARGETS,
@@ -76,7 +81,6 @@ from shared import (  # noqa: E402
     HTML_TEMPLATES,
     MARP_TEMPLATES,
     PARCHMENT_RGB,
-    ROOT as REPO_ROOT,
     SCREEN_TEMPLATES,
     TEMPLATES,
     build_targets,
@@ -91,6 +95,7 @@ import shared as shared_mod  # noqa: E402
 import verify as verify_mod  # noqa: E402
 from highlight import highlight_code_blocks  # noqa: E402
 from site_facts import (  # noqa: E402
+    public_path,
     FULL_PUBLIC_FACT_FILES,
     REDIRECT_SITE_FILE,
     check_site_facts,
@@ -157,7 +162,7 @@ def run_build_args(args: list[str]) -> tuple[int, str]:
 def site_fact_file_map() -> dict[str, str]:
     rels = (*FULL_PUBLIC_FACT_FILES, REDIRECT_SITE_FILE)
     return {
-        rel: (REPO_ROOT / rel).read_text(encoding="utf-8", errors="replace")
+        rel: public_path(rel).read_text(encoding="utf-8", errors="replace")
         for rel in rels
     }
 
@@ -228,66 +233,66 @@ PACKAGE_REQUIRED_ENTRIES = {
 
 
 def test_dist_package_contents() -> None:
-    archive = REPO_ROOT / "dist" / "kami.zip"
-    check("dist/kami.zip exists", archive.exists(), f"missing {archive}")
-    if not archive.exists():
-        return
+    """Build the archive the way the release workflow does and audit it.
 
-    size_bytes = archive.stat().st_size
-    check("dist/kami.zip stays below 6MB",
-          size_bytes <= PACKAGE_MAX_BYTES,
-          f"{size_bytes} bytes > {PACKAGE_MAX_BYTES} bytes")
+    dist/kami.zip is no longer tracked: CI packages from skills/kami at release
+    time and uploads the result, so the audit runs on a fresh candidate.
+    """
+    script = REPO_ROOT / "scripts" / "package-skill.sh"
+    with tempfile.TemporaryDirectory() as d:
+        archive = Path(d) / "kami.zip"
+        r = subprocess.run(["bash", str(script), str(archive)], capture_output=True, text=True, cwd=REPO_ROOT)
+        check("package-skill.sh builds a candidate archive", r.returncode == 0 and archive.exists(), r.stderr[-800:])
+        if not archive.exists():
+            return
 
-    with zipfile.ZipFile(archive) as zf:
-        names = set(zf.namelist())
+        size_bytes = archive.stat().st_size
+        check("kami.zip stays below 6MB",
+              size_bytes <= PACKAGE_MAX_BYTES,
+              f"{size_bytes} bytes > {PACKAGE_MAX_BYTES} bytes")
 
-    bad_root = sorted(name for name in names if not name.startswith(f"{PACKAGE_ROOT_NAME}/"))
-    check("dist/kami.zip uses a Claude-friendly top-level skill folder",
-          not bad_root,
-          f"entries outside {PACKAGE_ROOT_NAME}/: {', '.join(bad_root)}")
+        with zipfile.ZipFile(archive) as zf:
+            names = set(zf.namelist())
 
-    payload_names = {
-        name.removeprefix(f"{PACKAGE_ROOT_NAME}/")
-        for name in names
-        if name.startswith(f"{PACKAGE_ROOT_NAME}/")
-    }
-    forbidden = sorted(
-        name for name in payload_names
-        if name.startswith(PACKAGE_FORBIDDEN_PREFIXES)
-        or name in PACKAGE_FORBIDDEN_EXACT
-    )
-    check("dist/kami.zip excludes site, CI, tests, demos, generated mirrors, and large bundled fonts",
-          not forbidden,
-          f"forbidden entries: {', '.join(forbidden)}")
-    missing_required = sorted(PACKAGE_REQUIRED_ENTRIES - payload_names)
-    check("dist/kami.zip keeps required runtime skill files",
-          not missing_required,
-          f"missing entries: {', '.join(missing_required)}")
+        bad_root = sorted(name for name in names if not name.startswith(f"{PACKAGE_ROOT_NAME}/"))
+        check("kami.zip uses a Claude-friendly top-level skill folder",
+              not bad_root,
+              f"entries outside {PACKAGE_ROOT_NAME}/: {', '.join(bad_root)}")
 
-    # Structure alone cannot tell a current package from a stale one. The
-    # plugin mirror has `build_metadata.py --check`; the ZIP had no equivalent,
-    # so editing a source file and forgetting `package-skill.sh` left every
-    # check green while the archive Claude Desktop users download stayed on the
-    # old content. Compare what is inside against what it was built from.
-    stale: list[str] = []
-    absent: list[str] = []
-    with zipfile.ZipFile(archive) as zf:
-        for name in zf.namelist():
-            if name.endswith("/"):
-                continue
-            source = REPO_ROOT / name.removeprefix(f"{PACKAGE_ROOT_NAME}/")
-            if not source.exists():
-                absent.append(name)
-                continue
-            if hashlib.sha256(zf.read(name)).digest() != hashlib.sha256(source.read_bytes()).digest():
-                stale.append(name)
-    check("dist/kami.zip matches the sources it was built from",
-          not stale,
-          f"{len(stale)} stale entr(ies): {', '.join(sorted(stale)[:5])}"
-          " -- run `bash scripts/package-skill.sh`")
-    check("dist/kami.zip carries no entry missing from the repo",
-          not absent,
-          f"entries with no source: {', '.join(sorted(absent)[:5])}")
+        payload_names = {
+            name.removeprefix(f"{PACKAGE_ROOT_NAME}/")
+            for name in names
+            if name.startswith(f"{PACKAGE_ROOT_NAME}/")
+        }
+        forbidden = sorted(
+            name for name in payload_names
+            if name.startswith(PACKAGE_FORBIDDEN_PREFIXES)
+            or name in PACKAGE_FORBIDDEN_EXACT
+        )
+        check("kami.zip excludes site, CI, tests, demos, generated mirrors, and large bundled fonts",
+              not forbidden,
+              f"forbidden entries: {', '.join(forbidden)}")
+        missing_required = sorted(PACKAGE_REQUIRED_ENTRIES - payload_names)
+        check("kami.zip keeps required runtime skill files",
+              not missing_required,
+              f"missing entries: {', '.join(missing_required)}")
+
+        stale: list[str] = []
+        absent: list[str] = []
+        with zipfile.ZipFile(archive) as zf:
+            for name in zf.namelist():
+                if name.endswith("/"):
+                    continue
+                source = SKILL_ROOT / name.removeprefix(f"{PACKAGE_ROOT_NAME}/")
+                if not source.exists():
+                    absent.append(name)
+                    continue
+                if hashlib.sha256(zf.read(name)).digest() != hashlib.sha256(source.read_bytes()).digest():
+                    stale.append(name)
+        check("kami.zip matches skills/kami byte for byte", not stale,
+              f"{len(stale)} stale entr(ies): {', '.join(sorted(stale)[:5])}")
+        check("kami.zip carries no entry missing from skills/kami", not absent,
+              f"entries with no source: {', '.join(sorted(absent)[:5])}")
 
 
 def test_package_failure_preserves_last_good_archive() -> None:
@@ -332,7 +337,7 @@ def test_plugin_metadata_generated() -> None:
 
 def test_claude_plugin_marketplace_version_matches_version_file() -> None:
     """Claude Code uses this version instead of falling back to a commit hash."""
-    version = (REPO_ROOT / "VERSION").read_text(encoding="utf-8").strip()
+    version = (SKILL_ROOT / "VERSION").read_text(encoding="utf-8").strip()
     marketplace_file = REPO_ROOT / ".claude-plugin" / "marketplace.json"
     check("Claude plugin marketplace metadata exists", marketplace_file.exists())
     if not marketplace_file.exists():
@@ -384,7 +389,7 @@ def test_build_metadata_reads_tokens_from_root_argument() -> None:
 def test_catalog_lists_pptx_for_slides() -> None:
     from build_metadata import build_catalog_feed
 
-    catalog = json.loads(build_catalog_feed(REPO_ROOT))
+    catalog = json.loads(build_catalog_feed(SKILL_ROOT))
     slide = next(
         entry["item"]
         for entry in catalog["itemListElement"]
@@ -579,7 +584,7 @@ def test_site_facts_flags_bad_diagram_count() -> None:
 
 def test_site_facts_cover_developer_install_docs() -> None:
     files = site_fact_file_map()
-    command = "npx skills add tw93/kami/plugins/kami -a claude-code codex cursor -g -y"
+    command = "npx skills add tw93/kami -a claude-code codex cursor -g -y"
     files["developers.md"] = files["developers.md"].replace(command, "npx skills add stale/path")
     issues = site_fact_issues(files)
     check("public site facts flag stale developer install docs",
@@ -785,7 +790,7 @@ def test_print_surfaces_have_no_ornamental_brand_lines() -> None:
         ),
     }
     offenders: list[str] = []
-    sources = list(TEMPLATES.glob("*.html")) + list((REPO_ROOT / "assets" / "demos").glob("*.html"))
+    sources = list(TEMPLATES.glob("*.html")) + list((SITE_ROOT / "assets" / "demos").glob("*.html"))
     for path in sorted(sources):
         text = path.read_text(encoding="utf-8")
         for label, pattern in patterns.items():
@@ -809,7 +814,7 @@ def test_shipped_surfaces_keep_subtractive_defaults() -> None:
     print_sources = [
         path for path in TEMPLATES.glob("*.html")
         if not path.name.startswith("landing-page")
-    ] + list((REPO_ROOT / "assets" / "demos").glob("*.html"))
+    ] + list((SITE_ROOT / "assets" / "demos").glob("*.html"))
     large_print_radius = re.compile(
         r"border-radius:\s*(?:[789]|[1-9][0-9])(?:\.[0-9]+)?pt"
     )
@@ -840,11 +845,11 @@ def test_shipped_surfaces_keep_subtractive_defaults() -> None:
                 offenders.append(f"{path.name}: {selector} shadow")
 
     public_pages = [
-        REPO_ROOT / "index.html",
-        REPO_ROOT / "index-zh.html",
-        REPO_ROOT / "index-tw.html",
-        REPO_ROOT / "index-ja.html",
-        REPO_ROOT / "index-ko.html",
+        SITE_ROOT / "index.html",
+        SITE_ROOT / "index-zh.html",
+        SITE_ROOT / "index-tw.html",
+        SITE_ROOT / "index-ja.html",
+        SITE_ROOT / "index-ko.html",
     ]
     public_forbidden = (
         "border-left: 1.4pt solid var(--brand)",
@@ -859,7 +864,7 @@ def test_shipped_surfaces_keep_subtractive_defaults() -> None:
             if token in text:
                 offenders.append(f"{path.name}: {token}")
 
-    site_css = (REPO_ROOT / "styles.css").read_text(encoding="utf-8")
+    site_css = (SITE_ROOT / "styles.css").read_text(encoding="utf-8")
     for token in ("@keyframes fadeIn", "ul.dash", ".tag.brush", ".shadow-row"):
         if token in site_css:
             offenders.append(f"styles.css: {token}")
@@ -882,8 +887,8 @@ def test_shipped_surfaces_keep_subtractive_defaults() -> None:
 
 def test_print_radius_guidance_matches_shipped_range() -> None:
     """The quick reference must describe the same restrained range as templates."""
-    cheatsheet = (REPO_ROOT / "CHEATSHEET.md").read_text(encoding="utf-8")
-    design = (REPO_ROOT / "references" / "design.md").read_text(encoding="utf-8")
+    cheatsheet = (SKILL_ROOT / "CHEATSHEET.md").read_text(encoding="utf-8")
+    design = (SKILL_ROOT / "references" / "design.md").read_text(encoding="utf-8")
     check("print radius guidance matches shipped 2-6pt range",
           "within `2-6pt`" in cheatsheet
           and "within 2-6pt" in design
@@ -894,11 +899,11 @@ def test_print_radius_guidance_matches_shipped_range() -> None:
 def test_public_site_typography_contract_matches_templates() -> None:
     """Public prose must teach the one-serif contract templates actually ship."""
     pages = [
-        REPO_ROOT / "index.html",
-        REPO_ROOT / "index-zh.html",
-        REPO_ROOT / "index-tw.html",
-        REPO_ROOT / "index-ja.html",
-        REPO_ROOT / "index-ko.html",
+        SITE_ROOT / "index.html",
+        SITE_ROOT / "index-zh.html",
+        SITE_ROOT / "index-tw.html",
+        SITE_ROOT / "index-ja.html",
+        SITE_ROOT / "index-ko.html",
     ]
     stale = (
         "Chinese uses serif headlines and sans body",
@@ -910,7 +915,7 @@ def test_public_site_typography_contract_matches_templates() -> None:
         path.name for path in pages
         if any(token in path.read_text(encoding="utf-8") for token in stale)
     ]
-    design = (REPO_ROOT / "references" / "design.md").read_text(encoding="utf-8")
+    design = (SKILL_ROOT / "references" / "design.md").read_text(encoding="utf-8")
     check("public typography contract matches one-serif templates",
           not offenders
           and "One serif family per page for headlines and body" in design,
@@ -935,13 +940,13 @@ def test_landing_page_ctas_stack_at_320px() -> None:
 
 def test_public_site_og_dimensions_match_showcase_image() -> None:
     """Social metadata must describe the image bytes platforms will fetch."""
-    image = (REPO_ROOT / "assets" / "showcase" / "kami-landing.png").read_bytes()
+    image = (SITE_ROOT / "assets" / "showcase" / "kami-landing.png").read_bytes()
     valid_png = image[:8] == b"\x89PNG\r\n\x1a\n" and image[12:16] == b"IHDR"
     width = int.from_bytes(image[16:20], "big") if valid_png else 0
     height = int.from_bytes(image[20:24], "big") if valid_png else 0
     offenders = []
     for name in ("index.html", "index-zh.html", "index-tw.html", "index-ja.html", "index-ko.html"):
-        text = (REPO_ROOT / name).read_text(encoding="utf-8")
+        text = (SITE_ROOT / name).read_text(encoding="utf-8")
         declared_width = re.search(r'og:image:width" content="(\d+)"', text)
         declared_height = re.search(r'og:image:height" content="(\d+)"', text)
         if not (
@@ -957,11 +962,11 @@ def test_public_site_og_dimensions_match_showcase_image() -> None:
 def test_public_site_teaches_registered_tints_and_exact_radii() -> None:
     """Visible examples must describe tokens, not obsolete alpha recipes."""
     pages = [
-        REPO_ROOT / "index.html",
-        REPO_ROOT / "index-zh.html",
-        REPO_ROOT / "index-tw.html",
-        REPO_ROOT / "index-ja.html",
-        REPO_ROOT / "index-ko.html",
+        SITE_ROOT / "index.html",
+        SITE_ROOT / "index-zh.html",
+        SITE_ROOT / "index-tw.html",
+        SITE_ROOT / "index-ja.html",
+        SITE_ROOT / "index-ko.html",
     ]
     stale_tint_labels = (
         'class="opacity">0.18',
@@ -1004,8 +1009,8 @@ def test_reviewed_demo_details_keep_quiet_hierarchy() -> None:
         TEMPLATES / "resume.html",
         TEMPLATES / "resume-en.html",
         TEMPLATES / "resume-ko.html",
-        REPO_ROOT / "assets" / "demos" / "demo-musk-resume.html",
-        REPO_ROOT / "assets" / "demos" / "demo-resume-ko.html",
+        SITE_ROOT / "assets" / "demos" / "demo-musk-resume.html",
+        SITE_ROOT / "assets" / "demos" / "demo-resume-ko.html",
     ]
     for path in resume_surfaces:
         text = path.read_text(encoding="utf-8")
@@ -1016,7 +1021,7 @@ def test_reviewed_demo_details_keep_quiet_hierarchy() -> None:
         if "background: transparent" not in label or "color: var(--brand)" not in label:
             offenders.append(f"{path.name}: filled highlight label")
 
-    print_demo = (REPO_ROOT / "assets" / "demos" / "demo-kami-print.html").read_text(
+    print_demo = (SITE_ROOT / "assets" / "demos" / "demo-kami-print.html").read_text(
         encoding="utf-8"
     )
     command = css_block(print_demo, ".cmd")
@@ -1025,7 +1030,7 @@ def test_reviewed_demo_details_keep_quiet_hierarchy() -> None:
     if "border-radius: 4pt" not in command:
         offenders.append("demo-kami-print.html: command block radius")
 
-    slides_demo = (REPO_ROOT / "assets" / "demos" / "demo-agent-slides.html").read_text(
+    slides_demo = (SITE_ROOT / "assets" / "demos" / "demo-agent-slides.html").read_text(
         encoding="utf-8"
     )
     suffix = css_block(slides_demo, ".metric .metric-suffix")
@@ -1197,7 +1202,7 @@ def test_font_family_key_collapses_weight_variants() -> None:
 def test_inline_svg_text_uses_explicit_font_stacks() -> None:
     """WeasyPrint must not hand inline SVG labels to an arbitrary system font."""
     offenders = []
-    for folder in (REPO_ROOT / "assets" / "diagrams", REPO_ROOT / "assets" / "demos"):
+    for folder in (SKILL_ROOT / "assets" / "diagrams", SITE_ROOT / "assets" / "demos"):
         for path in sorted(folder.glob("*.html")):
             if re.search(r'<text\b[^>]*\bfont-family=["\']inherit["\']',
                          path.read_text(encoding="utf-8"), re.IGNORECASE):
@@ -1595,14 +1600,14 @@ def test_check_update_script() -> None:
     throttles through a local cache marker, and fails silently offline. It GETs
     only a version file and uploads no document/task content; KAMI_UPDATE_URL
     points it at a fixture."""
-    script = REPO_ROOT / "scripts" / "check-update.sh"
+    script = SKILL_ROOT / "scripts" / "check-update.sh"
     check("check-update.sh exists", script.exists())
     if not script.exists():
         return
     if shutil.which("bash") is None or shutil.which("curl") is None:
         check("check-update.sh behavior (skipped: bash/curl unavailable)", True)
         return
-    local_ver = (REPO_ROOT / "VERSION").read_text(encoding="utf-8").strip()
+    local_ver = (SKILL_ROOT / "VERSION").read_text(encoding="utf-8").strip()
 
     def run(cache: str, url: str) -> tuple[int, str]:
         env = dict(os.environ, XDG_CACHE_HOME=cache, KAMI_UPDATE_URL=url)
@@ -1617,7 +1622,7 @@ def test_check_update_script() -> None:
         rc, out = run(str(dp / "c1"), newer.as_uri())
         check("check-update notifies on a newer remote", rc == 0 and "9.9.9" in out, out)
         check("check-update default command uses plugin bundle path",
-              "npx skills add tw93/kami/plugins/kami -a claude-code codex cursor -g -y" in out and "skills update" not in out,
+              "npx skills add tw93/kami -a claude-code codex cursor -g -y" in out and "skills update" not in out,
               out)
 
         rc, out = run(str(dp / "c2"), same.as_uri())
@@ -1653,7 +1658,7 @@ def test_check_update_script() -> None:
 
 
 def test_check_update_defaults_to_latest_published_release() -> None:
-    script = REPO_ROOT / "scripts" / "check-update.sh"
+    script = SKILL_ROOT / "scripts" / "check-update.sh"
     with tempfile.TemporaryDirectory() as d:
         root = Path(d)
         bin_dir = root / "bin"
@@ -1686,7 +1691,7 @@ def test_check_update_uses_codex_plugin_update_command() -> None:
     """When installed through Codex plugin cache, the update hint should use
     plugin marketplace refresh commands instead of the legacy npx skill update.
     """
-    script = REPO_ROOT / "scripts" / "check-update.sh"
+    script = SKILL_ROOT / "scripts" / "check-update.sh"
     check("check-update.sh exists for Codex command test", script.exists())
     if not script.exists():
         return
@@ -1725,7 +1730,7 @@ def test_check_update_uses_claude_plugin_update_command() -> None:
     """When installed through Claude Code's plugin cache, the update hint should
     use Claude's plugin updater instead of generic npx skill install.
     """
-    script = REPO_ROOT / "scripts" / "check-update.sh"
+    script = SKILL_ROOT / "scripts" / "check-update.sh"
     check("check-update.sh exists for Claude command test", script.exists())
     if not script.exists():
         return
@@ -2355,7 +2360,7 @@ def test_math_cli_failure_preserves_source_and_success_is_atomic() -> None:
              status.get("detail", "locked runtime unavailable"),
              ci_required=True)
         return
-    script = REPO_ROOT / "scripts" / "math_render.py"
+    script = SKILL_ROOT / "scripts" / "math_render.py"
     with tempfile.TemporaryDirectory() as d:
         path = Path(d) / "filled.html"
         invalid = b"<p>\\(\\frac{1\\)</p>"
@@ -2478,7 +2483,7 @@ def test_mathjax_probe_and_install_ignore_polluted_node_options() -> None:
         polluted_probe = probe_mathjax()
         environment = os.environ.copy()
         installed = subprocess.run(
-            ["bash", str(REPO_ROOT / "scripts" / "ensure_mathjax.sh")],
+            ["bash", str(SKILL_ROOT / "scripts" / "ensure_mathjax.sh")],
             cwd=REPO_ROOT,
             env=environment,
             capture_output=True,
@@ -2499,7 +2504,7 @@ def test_mathjax_runtime_rejects_unsupported_node_21() -> None:
     import math_render as math_mod
 
     manifest = json.loads(
-        (REPO_ROOT / "scripts" / "mathjax-runtime" / "package.json")
+        (SKILL_ROOT / "scripts" / "mathjax-runtime" / "package.json")
         .read_text(encoding="utf-8")
     )
     with tempfile.TemporaryDirectory() as d:
@@ -2514,7 +2519,7 @@ def test_mathjax_runtime_rejects_unsupported_node_21() -> None:
         environment = os.environ.copy()
         environment["PATH"] = f"{fake_bin}:/usr/bin:/bin"
         result = subprocess.run(
-            ["bash", str(REPO_ROOT / "scripts" / "ensure_mathjax.sh")],
+            ["bash", str(SKILL_ROOT / "scripts" / "ensure_mathjax.sh")],
             cwd=REPO_ROOT,
             env=environment,
             capture_output=True,
@@ -2581,7 +2586,7 @@ def test_mathjax_installer_reclaims_dead_owner_lock() -> None:
         environment["PATH"] = f"{fake_bin}:/usr/bin:/bin"
         environment.pop("XDG_CACHE_HOME", None)
         result = subprocess.run(
-            ["bash", str(REPO_ROOT / "scripts" / "ensure_mathjax.sh")],
+            ["bash", str(SKILL_ROOT / "scripts" / "ensure_mathjax.sh")],
             cwd=REPO_ROOT,
             env=environment,
             capture_output=True,
@@ -2601,7 +2606,7 @@ def test_mathjax_installer_reclaims_dead_owner_lock() -> None:
             lock.mkdir()
             (lock / "pid").write_text(owner_text, encoding="utf-8")
             truncated = subprocess.run(
-                ["bash", str(REPO_ROOT / "scripts" / "ensure_mathjax.sh")],
+                ["bash", str(SKILL_ROOT / "scripts" / "ensure_mathjax.sh")],
                 cwd=REPO_ROOT,
                 env=environment,
                 capture_output=True,
@@ -2634,7 +2639,7 @@ def test_mathjax_cache_survives_weasyprint_runtime_configuration() -> None:
     environment.pop("NODE_OPTIONS", None)
     code = (
         "import json, sys;"
-        "sys.path.insert(0, 'scripts');"
+        "sys.path.insert(0, 'skills/kami/scripts');"
         "from optional_deps import require_weasyprint_html;"
         "from math_render import probe_mathjax;"
         "require_weasyprint_html();"
@@ -3069,7 +3074,7 @@ def test_mermaid_theme_drift_flags_token_mismatch() -> None:
 
 def test_mermaid_normalize_defaults_match_theme() -> None:
     import mermaid_normalize as mermaid_mod
-    theme = json.loads((REPO_ROOT / "references" / "mermaid-theme.json").read_text(encoding="utf-8"))
+    theme = json.loads((SKILL_ROOT / "references" / "mermaid-theme.json").read_text(encoding="utf-8"))
     expected_colors = {f"--{key}": value for key, value in theme["colors"].items()}
     check("mermaid normalizer fallback colors mirror mermaid-theme.json",
           mermaid_mod._DEFAULT_COLORS == expected_colors,
@@ -3135,7 +3140,7 @@ def test_mermaid_lint_flags_unnormalized_svg() -> None:
 
 def test_mermaid_diagram_templates_normalized() -> None:
     for name in ("sequence.html", "class.html", "er.html"):
-        path = REPO_ROOT / "assets" / "diagrams" / name
+        path = SKILL_ROOT / "assets" / "diagrams" / name
         check(f"diagram {name} exists", path.exists(), f"missing {path}")
         if not path.exists():
             continue
@@ -3149,11 +3154,11 @@ def test_mermaid_diagrams_match_their_mmd_sources() -> None:
     """The committed diagram HTML must still carry every node/participant/entity
     label from its .mmd source. No Node regenerates these, so this guards against
     a .mmd edit that silently leaves the committed SVG stale."""
-    src_dir = REPO_ROOT / "assets" / "diagrams" / "src"
+    src_dir = SKILL_ROOT / "assets" / "diagrams" / "src"
     sources = sorted(src_dir.glob("*.mmd"))
     check("diagram .mmd sources present", len(sources) >= 1, f"found {len(sources)}")
     for mmd in sources:
-        html_path = REPO_ROOT / "assets" / "diagrams" / f"{mmd.stem}.html"
+        html_path = SKILL_ROOT / "assets" / "diagrams" / f"{mmd.stem}.html"
         check(f"{mmd.stem}.html exists for {mmd.name}", html_path.exists())
         if not html_path.exists():
             continue
@@ -3187,7 +3192,7 @@ def test_mermaid_normalize_rejects_non_beautiful_mermaid() -> None:
 
 def test_mermaid_normalize_cli_accepts_output_before_input() -> None:
     """CLI parsing should accept both `input -o out` and `-o out input`."""
-    script = REPO_ROOT / "scripts" / "mermaid_normalize.py"
+    script = SKILL_ROOT / "scripts" / "mermaid_normalize.py"
     raw = (
         '<svg xmlns="http://www.w3.org/2000/svg" '
         'style="--bg:#ffffff;--fg:#000000;--accent:#ff0000">'
@@ -3212,7 +3217,7 @@ def test_mermaid_normalize_cli_accepts_output_before_input() -> None:
 
 def test_mermaid_normalize_cli_reports_missing_input() -> None:
     """Missing input should be a concise ERROR, not a Python traceback."""
-    script = REPO_ROOT / "scripts" / "mermaid_normalize.py"
+    script = SKILL_ROOT / "scripts" / "mermaid_normalize.py"
     with tempfile.TemporaryDirectory() as d:
         result = subprocess.run(
             [sys.executable, str(script), str(Path(d) / "missing.svg")],
@@ -3724,8 +3729,8 @@ def test_build_cli_dispatches_new_checks() -> None:
 
 
 def test_skill_routes_visual_repairs_and_generated_assets_without_losing_contracts() -> None:
-    skill = (REPO_ROOT / "SKILL.md").read_text(encoding="utf-8")
-    diagrams = (REPO_ROOT / "references" / "diagrams.md").read_text(encoding="utf-8")
+    skill = (SKILL_ROOT / "SKILL.md").read_text(encoding="utf-8")
+    diagrams = (SKILL_ROOT / "references" / "diagrams.md").read_text(encoding="utf-8")
     for mode in ("New document", "Content-only", "Visual repair", "Generated asset"):
         check(f"SKILL work mode keeps {mode}", mode in skill)
     check("visual repair locks target, preserve, evidence, and artifact matrices",
@@ -4395,7 +4400,7 @@ def test_coverage_caps_adversarial_reports() -> None:
 
 def test_mcp_server_stdio_protocol() -> None:
     """The server must speak newline-delimited JSON-RPC with nothing else on stdout."""
-    script = REPO_ROOT / "scripts" / "mcp_server.py"
+    script = SKILL_ROOT / "scripts" / "mcp_server.py"
     msgs = [
         {"jsonrpc": "2.0", "method": "initialize", "params": {}},
         {"jsonrpc": "2.0", "id": 1, "method": "initialize",
@@ -4551,7 +4556,7 @@ def test_mcp_check_returns_stable_findings_and_coverage() -> None:
 
 def test_mcp_server_rejects_bad_frames_without_exiting() -> None:
     """Wrong-shaped JSON-RPC frames return errors and do not kill the server."""
-    script = REPO_ROOT / "scripts" / "mcp_server.py"
+    script = SKILL_ROOT / "scripts" / "mcp_server.py"
     msgs = [
         [],
         {"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": "bad"},
@@ -4586,7 +4591,7 @@ def test_mcp_all_tools_succeed_over_stdio() -> None:
         skip("MCP all-tools stdio success path", str(exc), ci_required=True)
         return
 
-    script = REPO_ROOT / "scripts" / "mcp_server.py"
+    script = SKILL_ROOT / "scripts" / "mcp_server.py"
     with tempfile.TemporaryDirectory() as d:
         root = Path(d)
         html = root / "source.html"

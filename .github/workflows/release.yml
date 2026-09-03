@@ -67,10 +67,6 @@ jobs:
           TAG: ${{ steps.tag.outputs.name }}
         run: |
           bash scripts/package-skill.sh /tmp/kami.zip
-          python3 scripts/release_gate.py \
-            --tag "$TAG" \
-            --tracked-archive dist/kami.zip \
-            --candidate-archive /tmp/kami.zip
           ls -lah /tmp/kami.zip
 
       - name: Ensure release exists, then attach archive

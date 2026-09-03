@@ -37,7 +37,13 @@ import difflib
 import hashlib
 import json
 import shutil
+import sys
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+SKILL_ROOT = ROOT / "skills" / "kami"
+SITE_ROOT = ROOT / "site"
+sys.path.insert(0, str(SKILL_ROOT / "scripts"))
 
 from shared import (
     DIAGRAM_TEMPLATES,
@@ -45,8 +51,6 @@ from shared import (
     PUBLIC_DOCUMENT_TEMPLATE_KINDS,
     public_template_kind,
 )
-
-ROOT = Path(__file__).resolve().parent.parent
 
 PLUGIN_NAME = "kami"
 CODEX_CATEGORY = "Productivity"
@@ -70,25 +74,8 @@ CLAUDE_PLUGIN_DESCRIPTION = (
 )
 
 SKILL_MIRROR_ROOT = Path("plugins/kami/skills/kami")
-SKILL_MIRROR_FILES = (
-    "CHEATSHEET.md",
-    "LICENSE",
-    "SKILL.md",
-    "VERSION",
-)
-SKILL_MIRROR_DIRS = (
-    "assets/diagrams",
-    "assets/fonts",
-    "assets/images",
-    "assets/templates",
-    "references",
-    "scripts",
-)
-SKILL_MIRROR_ALLOWED_FONT_FILES = {
-    "JetBrainsMono.woff2",
-    "LICENSE-SourceHanSerifK.txt",
-}
 SKILL_MIRROR_IGNORED_DIRS = {
+    "examples",
     "__pycache__",
     ".mypy_cache",
     ".pytest_cache",
@@ -520,8 +507,6 @@ def should_include_skill_mirror_file(path: Path) -> bool:
         return False
     if path.suffix in SKILL_MIRROR_IGNORED_SUFFIXES:
         return False
-    if path.parts[:2] == ("assets", "fonts"):
-        return path.name in SKILL_MIRROR_ALLOWED_FONT_FILES
     return True
 
 
@@ -529,34 +514,24 @@ def collect_plugin_tree(root: Path, codex_manifest_rendered: str, claude_manifes
     """Build the generated file set for the shared plugin directory.
 
     Claude Code and Codex install only the directory referenced by their
-    marketplace source path. Kami's source skill lives at the repository root,
-    so the plugin mirrors a lightweight skill root under plugins/kami/skills/kami
-    and keeps all paths referenced by SKILL.md relative to that generated skill
-    directory.
+    marketplace source path, so plugins/kami carries the two manifests plus a
+    byte-for-byte copy of skills/kami. The copy exists so a plugin install does
+    not drag the website, fonts, and tests that share the repository.
     """
     generated = {
         "plugins/kami/.claude-plugin/plugin.json": claude_manifest_rendered.encode(),
         "plugins/kami/.codex-plugin/plugin.json": codex_manifest_rendered.encode(),
     }
-
-    for source in SKILL_MIRROR_FILES:
-        path = root / source
-        if not path.exists():
-            raise SystemExit(f"ERROR: missing required plugin source file {path}")
-        generated[(SKILL_MIRROR_ROOT / source).as_posix()] = path.read_bytes()
-
-    for source in SKILL_MIRROR_DIRS:
-        source_root = root / source
-        if not source_root.exists():
-            raise SystemExit(f"ERROR: missing required plugin source tree {source_root}")
-        for path in sorted(source_root.rglob("*")):
-            if not path.is_file():
-                continue
-            source_rel = path.relative_to(root)
-            if not should_include_skill_mirror_file(source_rel):
-                continue
-            generated[(SKILL_MIRROR_ROOT / source_rel).as_posix()] = path.read_bytes()
-
+    skill_root = root / "skills" / "kami"
+    if not (skill_root / "SKILL.md").exists():
+        raise SystemExit(f"ERROR: missing skill source at {skill_root}")
+    for path in sorted(skill_root.rglob("*")):
+        if not path.is_file():
+            continue
+        source_rel = path.relative_to(skill_root)
+        if not should_include_skill_mirror_file(source_rel):
+            continue
+        generated[(SKILL_MIRROR_ROOT / source_rel).as_posix()] = path.read_bytes()
     return generated
 
 
@@ -663,29 +638,35 @@ def main() -> int:
     args = parser.parse_args()
     root = args.root.resolve()
 
-    version = read_version(root)
-    codex_plugin_rendered = render_json(build_codex_plugin(version, read_token_value(root, "brand")))
+    skill_root = root / "skills" / "kami"
+    site_root = root / "site"
+    version = read_version(skill_root)
+    codex_plugin_rendered = render_json(build_codex_plugin(version, read_token_value(skill_root, "brand")))
     codex_marketplace_rendered = render_json(build_codex_marketplace())
     claude_plugin_rendered = render_json(build_claude_plugin(version))
     claude_marketplace_rendered = render_json(build_claude_marketplace(version))
     plugin_tree = collect_plugin_tree(root, codex_plugin_rendered, claude_plugin_rendered)
 
-    skill_digest = "sha256:" + hashlib.sha256((root / "SKILL.md").read_bytes()).hexdigest()
-    protocol, tools = read_mcp_surface(root)
+    skill_source = (skill_root / "SKILL.md").read_bytes()
+    skill_digest = "sha256:" + hashlib.sha256(skill_source).hexdigest()
+    protocol, tools = read_mcp_surface(skill_root)
 
     generated_files = [
         (root / ".claude-plugin" / "marketplace.json", claude_marketplace_rendered),
         (root / ".agents" / "plugins" / "marketplace.json", codex_marketplace_rendered),
         (
-            root / ".well-known" / "agent-skills" / "index.json",
+            site_root / ".well-known" / "agent-skills" / "index.json",
             render_json(build_agent_skills_index(version, skill_digest)),
         ),
         (
-            root / ".well-known" / "mcp" / "server-card.json",
+            site_root / ".well-known" / "mcp" / "server-card.json",
             render_json(build_mcp_server_card(version, protocol, tools)),
         ),
-        (root / "feeds" / "catalog.jsonld", build_catalog_feed(root)),
-        (root / "schemamap.xml", build_schemamap()),
+        (site_root / "feeds" / "catalog.jsonld", build_catalog_feed(skill_root)),
+        (site_root / "schemamap.xml", build_schemamap()),
+        # The website serves the skill definition at /SKILL.md; it is a copy of
+        # the source, never edited in site/.
+        (site_root / "SKILL.md", skill_source.decode("utf-8")),
     ]
 
     if args.check:

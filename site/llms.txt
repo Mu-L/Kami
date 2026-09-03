@@ -46,9 +46,9 @@ How an agent should call Kami: install the skill, fill the matching content sche
 ## Install
 - Claude Code (v2.1.142+): `/plugin marketplace add tw93/kami && /plugin install kami@kami`
 - Codex plugin marketplace: `codex plugin marketplace add tw93/kami && codex plugin add kami@kami`
-- Generic agents (`~/.agents`): `npx skills add tw93/kami/plugins/kami -a claude-code codex cursor -g -y`
+- Generic agents (`~/.agents`): `npx skills add tw93/kami -a claude-code codex cursor -g -y`
 - Claude Desktop: download the release asset `kami.zip` from GitHub Releases (not the source-code ZIP) and upload it in Skills settings
-- MCP client: `claude mcp add kami -- python3 <checkout>/scripts/mcp_server.py`
+- MCP client: `claude mcp add kami -- python3 <checkout>/skills/kami/scripts/mcp_server.py`
 
 ## Templates
 - 8 document template types: One-pager, Letter, Resume, Long document, Portfolio, Slides, Equity report, Changelog

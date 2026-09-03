@@ -1,13 +1,24 @@
 <!doctype html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Kami 紙: AI 에이전트를 위한 문서 디자인 시스템</title>
+  <script>
+  (function(){
+    if(localStorage.getItem('kami-lang'))return;
+    var l=(navigator.language||'').toLowerCase();
+    if(/^zh.*(hant|tw|hk|mo)/.test(l))location.replace('./index-tw.html');
+    else if(l.indexOf('zh')===0)location.replace('./index-zh.html');
+    else if(l.indexOf('ja')===0)location.replace('./index-ja.html');
+    else if(l.indexOf('ko')===0)location.replace('./index-ko.html');
+  })();
+  </script>
+  <title>Kami: Document Design System for AI Agents</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Kami - AI 기반 전문 문서를 위한 따뜻한 양피지 디자인 시스템. 하나의 강조색, 세리프 주도 계층 구조, 에디토리얼 여백으로 구성됩니다.">
+  <meta name="description" content="Kami - a warm parchment design system for AI-assisted professional documents, shaped by one accent color, serif-led hierarchy, and editorial whitespace.">
   <link rel="icon" href="assets/images/logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
-  <link rel="canonical" href="https://kami.tw93.fun/index-ko.html">
+  <link rel="canonical" href="https://kami.tw93.fun/">
+  <link rel="alternate" type="text/markdown" href="https://kami.tw93.fun/index.md">
   <link rel="alternate" hreflang="en" href="https://kami.tw93.fun/">
   <link rel="alternate" hreflang="zh-CN" href="https://kami.tw93.fun/index-zh.html">
   <link rel="alternate" hreflang="ja" href="https://kami.tw93.fun/index-ja.html">
@@ -15,16 +26,16 @@
   <link rel="alternate" hreflang="ko" href="https://kami.tw93.fun/index-ko.html">
   <link rel="alternate" hreflang="x-default" href="https://kami.tw93.fun/">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Kami: AI 에이전트를 위한 문서 디자인 시스템">
-  <meta property="og:description" content="Kami - AI 기반 전문 문서를 위한 따뜻한 양피지 디자인 시스템. 하나의 강조색, 세리프 주도 계층 구조, 에디토리얼 여백으로 구성됩니다.">
-  <meta property="og:url" content="https://kami.tw93.fun/index-ko.html">
+  <meta property="og:title" content="Kami: Document Design System for AI Agents">
+  <meta property="og:description" content="Kami - a warm parchment design system for AI-assisted professional documents, shaped by one accent color, serif-led hierarchy, and editorial whitespace.">
+  <meta property="og:url" content="https://kami.tw93.fun/">
   <meta property="og:image" content="https://kami.tw93.fun/assets/showcase/kami-landing.png">
   <meta property="og:image:width" content="3110">
   <meta property="og:image:height" content="2392">
-  <meta property="og:locale" content="ko_KR">
+  <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Kami: AI 에이전트를 위한 문서 디자인 시스템">
-  <meta name="twitter:description" content="Kami - AI 기반 전문 문서를 위한 따뜻한 양피지 디자인 시스템. 하나의 강조색, 세리프 주도 계층 구조, 에디토리얼 여백으로 구성됩니다.">
+  <meta name="twitter:title" content="Kami: Document Design System for AI Agents">
+  <meta name="twitter:description" content="Kami - a warm parchment design system for AI-assisted professional documents, shaped by one accent color, serif-led hierarchy, and editorial whitespace.">
   <meta name="twitter:image" content="https://kami.tw93.fun/assets/showcase/kami-landing.png">
   <script type="application/ld+json">
   {
@@ -32,7 +43,7 @@
     "@type": "SoftwareApplication",
     "@id": "https://kami.tw93.fun/#kami",
     "name": "Kami",
-    "description": "AI 기반 전문 문서를 위한 따뜻한 양피지 디자인 시스템. 하나의 강조색, 세리프 주도 계층 구조, 에디토리얼 여백.",
+    "description": "A warm parchment design system for AI-assisted professional documents. One accent color, serif-led hierarchy, and editorial whitespace.",
     "url": "https://kami.tw93.fun",
     "applicationCategory": "DesignApplication",
     "operatingSystem": "Any",
@@ -65,34 +76,34 @@
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "Kami란 무엇인가요?",
+        "name": "What is Kami?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Kami는 하나의 강조색, 세리프 중심 위계, 따뜻한 양피지 캔버스로 AI 생성 문서에 일관된 편집 언어를 부여하고 Claude Design이나 GPT Canvas 같은 이미지 렌더러용 비주얼 브리프로도 쓸 수 있는 디자인 시스템입니다."
+          "text": "Kami is a constraint-based design system that gives AI-generated documents a consistent editorial language through one accent color, serif-led hierarchy, and a warm parchment canvas, and can also guide image renderers such as Claude Design or GPT Canvas."
         }
       },
       {
         "@type": "Question",
-        "name": "Kami로 무엇을 만들 수 있나요?",
+        "name": "What can Kami produce?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Kami는 8가지 문서 템플릿, 다국어 랜딩 페이지 시스템, 18가지 인라인 SVG 다이어그램을 제공하며 문서는 PDF나 PNG로 내보낼 수 있고 슬라이드는 편집 가능한 PPTX도 지원합니다."
+          "text": "Kami includes eight document templates, a multilingual landing-page system, and 18 inline SVG diagram types. Documents export to PDF or PNG, and slides also have an editable PPTX path."
         }
       },
       {
         "@type": "Question",
-        "name": "브랜드 스타일에 맞출 수 있나요?",
+        "name": "Can Kami match my brand?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "네, 브랜드 색상, 글꼴, 레이아웃 선호를 에이전트에게 알려 주거나 브랜드 설정을 제공하면 명시한 요청이 항상 Kami 기본값보다 우선합니다."
+          "text": "Yes, share your brand colors, fonts, and layout preferences or provide a brand profile, and your brief will override Kami's defaults."
         }
       },
       {
         "@type": "Question",
-        "name": "Kami는 어떤 언어를 지원하나요?",
+        "name": "What languages does Kami support?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "영어, 중국어, 일본어, 한국어를 지원하며 각각 Charter, TsangerJinKai02, YuMincho, Source Han Serif K를 사용해 자간, 행간, 글꼴 크기를 조정하고 일본어와 한국어는 best-effort CJK 경로로 지원해 배포 전 비주얼 QA를 거칩니다."
+          "text": "Kami supports English, Chinese, Japanese, and Korean with Charter, TsangerJinKai02, YuMincho, and Source Han Serif K respectively, plus per-language tuning for spacing, line height, and type size, while Japanese and Korean remain best-effort CJK paths with visual QA before delivery."
         }
       }
     ]
@@ -156,13 +167,13 @@
       },
       {
         "@type": "WebPage",
-        "@id": "https://kami.tw93.fun/index-ko.html#webpage",
-        "url": "https://kami.tw93.fun/index-ko.html",
-        "name": "Kami 紙: AI 에이전트를 위한 문서 디자인 시스템",
+        "@id": "https://kami.tw93.fun/#webpage",
+        "url": "https://kami.tw93.fun/",
+        "name": "Kami: Document Design System for AI Agents",
         "isPartOf": { "@id": "https://kami.tw93.fun/#website" },
         "about": { "@id": "https://kami.tw93.fun/#kami" },
         "primaryImageOfPage": "https://kami.tw93.fun/assets/showcase/kami-landing.png",
-        "inLanguage": "ko",
+        "inLanguage": "en",
         "speakable": {
           "@type": "SpeakableSpecification",
           "cssSelector": [".hero h1", ".hero .tagline", ".manifesto"]
@@ -181,13 +192,13 @@
       <span>Design System · v1.14.0<span class="eyebrow-date"> · 2026.08</span></span>
       <span class="hero-links">
         <nav class="lang-switch" aria-label="Language" data-lang-switch>
-          <button class="lang-trigger" type="button" aria-expanded="false" data-lang-trigger>한국어</button>
+          <button class="lang-trigger" type="button" aria-expanded="false" data-lang-trigger>English</button>
           <div class="lang-menu" data-lang-menu>
-            <a href="./index.html" data-lang="en">English</a>
+            <a href="./index.html" class="active" data-lang="en">English</a>
             <a href="./index-zh.html" data-lang="zh">简体中文</a>
             <a href="./index-tw.html" data-lang="tw">繁體中文</a>
             <a href="./index-ja.html" data-lang="ja">日本語</a>
-            <a href="./index-ko.html" class="active" data-lang="ko">한국어</a>
+            <a href="./index-ko.html" data-lang="ko">한국어</a>
           </div>
         </nav>
         <a href="https://github.com/tw93/kami" target="_blank" rel="noopener" aria-label="GitHub">
@@ -203,12 +214,12 @@
       </span>
     </div>
     <h1>Kami<span class="cn">紙</span></h1>
-    <p class="tagline">좋은 콘텐츠는 좋은 종이를 만날 자격이 있습니다. Kami는 AI 시대를 위한 레이아웃 디자인 시스템으로, 문서를 명확하고 읽기 쉽고 기억에 남게 만듭니다.</p>
+    <p class="tagline">Good content deserves good paper. Kami is a layout design system for the AI era, making documents clear, readable, and memorable.</p>
     <div class="hero-tokens">
       <span><b>Canvas</b>#f5f4ed</span>
       <span><b>Accent</b>#1B365D</span>
       <span><b>Serif</b>Charter / TsangerJinKai</span>
-      <span><b>Sans</b>= Serif (페이지당 단일 폰트)</span>
+      <span><b>Sans</b>= Serif (single font per page)</span>
     </div>
   </header>
 
@@ -216,29 +227,29 @@
   <section>
     <div class="section-head">
       <p class="section-num">00 · See it</p>
-      <h2 class="section-title">출력 샘플</h2>
-      <p class="section-lede">Claude에게 브리프를 전달하세요: 원페이저, 긴 문서, 레터, 포트폴리오, 이력서, 슬라이드 모두 하나의 작고 신뢰할 수 있는 규칙 세트에서 정돈된 레이아웃으로 완성됩니다. 동일한 브리프는 <a href="https://github.com/tw93/kami#beyond-documents" style="color:var(--brand); text-decoration:none; font-weight:500;">이미지 렌더러에도 적용</a>할 수 있으며, README에 복사-붙여넣기 프롬프트와 샘플 출력물이 포함되어 있습니다.</p>
+      <h2 class="section-title">Output Samples</h2>
+      <p class="section-lede">Give Claude the brief: one-pagers, long docs, letters, portfolios, resumes, slides all become polished layouts from one small, reliable rule set. The same brief also <a href="https://github.com/tw93/kami#beyond-documents" style="color:var(--brand); text-decoration:none; font-weight:500;">travels to image renderers</a>, with the copy-paste prompt and sample outputs in the README.</p>
     </div>
     <div class="demo-grid">
       <div class="demo-card">
         <a href="assets/demos/demo-tesla.pdf" target="_blank"><img src="assets/demos/demo-tesla.png" alt="Tesla equity report" loading="lazy" decoding="async"></a>
         <p class="demo-title">Equity Report</p>
-        <p class="demo-desc">Tesla 2026년 1분기 실적 분석</p>
+        <p class="demo-desc">Tesla Q1 2026 earnings analysis</p>
       </div>
       <div class="demo-card">
-        <a href="assets/demos/demo-resume-ko.pdf" target="_blank"><img src="assets/demos/demo-resume-ko.png" alt="Korean resume" loading="lazy" decoding="async"></a>
+        <a href="assets/demos/demo-musk-resume.pdf" target="_blank"><img src="assets/demos/demo-musk-resume.png" alt="Musk resume" loading="lazy" decoding="async"></a>
         <p class="demo-title">Resume</p>
-        <p class="demo-desc">개발자 이력서, 2페이지</p>
+        <p class="demo-desc">Founder CV, 2 pages</p>
       </div>
       <div class="demo-card">
         <a href="assets/demos/demo-kami-print.pdf" target="_blank"><img src="assets/demos/demo-kami-print.png" alt="Kami print one-pager" loading="lazy" decoding="async"></a>
         <p class="demo-title">One-Pager</p>
-        <p class="demo-desc">Kami 소개, 흰 종이 인쇄, 1페이지</p>
+        <p class="demo-desc">Kami intro, white-paper print, 1 page</p>
       </div>
       <div class="demo-card">
         <a href="assets/demos/demo-agent-slides.pdf" target="_blank"><img src="assets/demos/demo-agent-slides.png" alt="Agent slides" loading="lazy" decoding="async"></a>
         <p class="demo-title">Slides</p>
-        <p class="demo-desc">에이전트 키노트, 6슬라이드</p>
+        <p class="demo-desc">Agent keynote, 6 slides</p>
       </div>
     </div>
   </section>
@@ -247,24 +258,24 @@
   <section>
     <div class="section-head">
       <p class="section-num">Landing Pages</p>
-      <h2 class="section-title">Kami로 제작</h2>
-      <p class="section-lede">동일한 랜딩 페이지 템플릿을 세 가지 다른 제품에 적용한 결과. 하나의 제약 세트, 세 가지 다른 목적.</p>
+      <h2 class="section-title">Built with Kami</h2>
+      <p class="section-lede">The same landing-page template applied to three different products. One constraint set, three distinct purposes.</p>
     </div>
     <div class="landing-grid">
       <div class="landing-card">
         <a href="https://kami.tw93.fun" target="_blank" rel="noopener"><img src="assets/showcase/kami-landing.png" alt="Kami landing page" loading="lazy" decoding="async"></a>
         <p class="demo-title">Kami</p>
-        <p class="demo-desc">디자인 시스템 홈페이지</p>
+        <p class="demo-desc">Design system homepage</p>
       </div>
       <div class="landing-card">
         <a href="https://luo.tw93.fun" target="_blank" rel="noopener"><img src="assets/showcase/luo-landing.png" alt="Luo landing page" loading="lazy" decoding="async"></a>
         <p class="demo-title">Luo</p>
-        <p class="demo-desc">CJK 읽기용 폰트, 중국어</p>
+        <p class="demo-desc">CJK reading font, Chinese</p>
       </div>
       <div class="landing-card">
         <a href="https://mole.fit" target="_blank" rel="noopener"><img src="assets/showcase/mole-landing.png" alt="Mole landing page" loading="lazy" decoding="async"></a>
         <p class="demo-title">Mole</p>
-        <p class="demo-desc">macOS 시스템 유틸리티</p>
+        <p class="demo-desc">macOS system utility</p>
       </div>
     </div>
   </section>
@@ -273,8 +284,8 @@
   <section>
     <div class="section-head">
       <p class="section-num">01 · Usage</p>
-      <h2 class="section-title">설치 및 사용</h2>
-      <p class="section-lede">Claude에게 필요한 것을 말하세요. 예를 들어 "이력서 만들어 줘", "스타트업 원페이저 만들어 줘", "발표용 슬라이드 디자인해 줘". 스킬이 자동으로 실행되며, 슬래시 명령어가 필요 없습니다.</p>
+      <h2 class="section-title">Install &amp; Invoke</h2>
+      <p class="section-lede">Tell Claude what you need, for example "build me a resume", "make a one-pager for my startup", or "design a slide deck for my talk". The skill auto-triggers, no slash command needed.</p>
     </div>
 <pre class="code code-wrap"><span class="c"># Claude Code (v2.1.142+)</span>
 /plugin marketplace add tw93/kami
@@ -284,29 +295,29 @@
 codex plugin marketplace add tw93/kami
 codex plugin add kami@kami
 
-<span class="c"># 범용 에이전트</span>
-npx skills add tw93/kami/plugins/kami -a claude-code codex cursor -g -y
+<span class="c"># Universal agents</span>
+npx skills add tw93/kami -a claude-code codex cursor -g -y
 
 <span class="c"># Claude Desktop</span>
-<a href="https://github.com/tw93/kami/releases/latest/download/kami.zip" style="color:var(--brand); text-decoration:none;">kami.zip</a>을 내려받아 Customize &gt; Skills &gt; "+" &gt; Create skill에서 업로드</pre>
+Download <a href="https://github.com/tw93/kami/releases/latest/download/kami.zip" style="color:var(--brand); text-decoration:none;">kami.zip</a>, then upload it in Customize &gt; Skills &gt; "+" &gt; Create skill</pre>
   </section>
 
   <!-- ============ 02 MANIFESTO ============ -->
   <section>
     <div class="section-head">
       <p class="section-num">02 · Manifesto</p>
-      <h2 class="section-title">디자인 원칙</h2>
+      <h2 class="section-title">Design Principles</h2>
     </div>
-    <p class="manifesto">따뜻한 양피지 캔버스, <em>잉크 블루</em>를 유일한 강조색으로, 세리프가 계층 구조를 담당하며, 하드 섀도우와 화려한 팔레트는 배제합니다. 이 시스템은 인쇄물을 위해 만들어졌습니다: 안정적이고, 명확하며, 절제되어 있습니다. 양피지가 기본이며, 선택형 흰 종이 변형을 사용하면 가정용이나 사무용 프린터를 위해 어떤 문서든 흰 배경으로 인쇄하면서도 카드와 표에 따뜻함을 남깁니다.</p>
+    <p class="manifesto">Warm parchment canvas, <em>ink blue</em> as the sole accent, serif carries hierarchy, while hard shadows and flashy palettes recede. This system is built for printed matter: stable, clear, and composed. Parchment is the default; an opt-in white-paper variant prints any document on a white background while keeping the warmth in cards and tables.</p>
     <ol class="rules">
-      <li><span class="n">1</span><p>페이지 배경은 양피지 <code>#f5f4ed</code>, 순백은 절대 사용하지 않음</p></li>
-      <li><span class="n">2</span><p>강조색은 잉크 블루 <code>#1B365D</code> 하나만; 두 번째 유채색 없음</p></li>
-      <li><span class="n">3</span><p>모든 회색은 따뜻한 색조, 황갈색 기반; 차가운 청회색 사용 금지</p></li>
-      <li><span class="n">4</span><p>제목과 본문은 하나의 세리프로 통일하고, 실제 UI 요소에만 별도 산세리프 사용</p></li>
-      <li><span class="n">5</span><p>세리프 본문은 400, 제목은 500. 합성 볼드 사용 금지</p></li>
-      <li><span class="n">6</span><p>세 가지 행간 밴드: 타이트 제목 1.1-1.3 / 밀집 1.4-1.45 / 읽기 1.5-1.55</p></li>
-      <li><span class="n">7</span><p>태그 배경은 반드시 솔리드 hex; rgba 금지, WeasyPrint 이중 사각형 버그</p></li>
-      <li><span class="n">8</span><p>표면은 기본적으로 평평하게 두고, 실제로 떠 있는 스크린샷이나 팝오버에만 아주 옅은 그림자를 사용</p></li>
+      <li><span class="n">1</span><p>Page background is parchment <code>#f5f4ed</code>, never pure white</p></li>
+      <li><span class="n">2</span><p>Accent color is ink blue <code>#1B365D</code> only; no second chromatic hue</p></li>
+      <li><span class="n">3</span><p>All grays are warm, yellow-brown undertone; no cool blue-grays</p></li>
+      <li><span class="n">4</span><p>One serif family carries headlines and body; add a distinct sans only for real UI chrome</p></li>
+      <li><span class="n">5</span><p>Serif body at 400, headings at 500. Avoid synthetic bold</p></li>
+      <li><span class="n">6</span><p>Three line-height bands: tight titles 1.1-1.3 / dense 1.4-1.45 / reading 1.5-1.55</p></li>
+      <li><span class="n">7</span><p>Tag backgrounds must be solid hex; no rgba, WeasyPrint double-rectangle bug</p></li>
+      <li><span class="n">8</span><p>Keep surfaces flat by default; reserve a whisper shadow for real floating elements</p></li>
     </ol>
   </section>
 
@@ -314,24 +325,24 @@ npx skills add tw93/kami/plugins/kami -a claude-code codex cursor -g -y
   <section>
     <div class="section-head">
       <p class="section-num">03 · Color</p>
-      <h2 class="section-title">따뜻한 절제</h2>
-      <p class="section-lede">하나의 강조색 + 따뜻한 중성색 + 차가운 색상 제로. 잉크 블루는 어떤 페이지에서든 <b>5%</b> 이하만 차지합니다. 그 이상은 절제가 아니라 혼잡입니다.</p>
+      <h2 class="section-title">Warm Restraint</h2>
+      <p class="section-lede">One accent + warm neutrals + zero cool colors. Ink blue covers no more than <b>5%</b> of any page. Beyond that is clutter, not restraint.</p>
     </div>
 
     <h3 class="subhead">Canvas</h3>
     <div class="swatches">
-      <div class="swatch"><div class="chip" style="background:#f5f4ed"></div><div class="info"><p class="name">Parchment</p><p class="role">페이지 배경, 감성의 기초</p><span class="hex">#F5F4ED</span></div></div>
-      <div class="swatch"><div class="chip" style="background:#faf9f5"></div><div class="info"><p class="name">Ivory</p><p class="role">카드 / 부상된 표면</p><span class="hex">#FAF9F5</span></div></div>
-      <div class="swatch"><div class="chip" style="background:#e8e6dc"></div><div class="info"><p class="name">Warm Sand</p><p class="role">버튼 기본 / 인터랙티브 표면</p><span class="hex">#E8E6DC</span></div></div>
-      <div class="swatch dark"><div class="chip" style="background:#141413"></div><div class="info"><p class="name" style="color:var(--deep-dark)">Deep Dark</p><p class="role">다크 테마 페이지 기본, 순수 블랙 아님</p><span class="hex">#141413</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#f5f4ed"></div><div class="info"><p class="name">Parchment</p><p class="role">Page background, the emotional foundation</p><span class="hex">#F5F4ED</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#faf9f5"></div><div class="info"><p class="name">Ivory</p><p class="role">Cards / elevated surfaces</p><span class="hex">#FAF9F5</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#e8e6dc"></div><div class="info"><p class="name">Warm Sand</p><p class="role">Button default / interactive surfaces</p><span class="hex">#E8E6DC</span></div></div>
+      <div class="swatch dark"><div class="chip" style="background:#141413"></div><div class="info"><p class="name" style="color:var(--deep-dark)">Deep Dark</p><p class="role">Dark theme page base, not pure black</p><span class="hex">#141413</span></div></div>
     </div>
 
     <h3 class="subhead">Brand</h3>
     <div class="swatches">
-      <div class="swatch brand"><div class="chip" style="background:#1B365D"></div><div class="info"><p class="name">Ink Blue</p><p class="role">기본 색상 · CTA · 레이블 · 섹션 오버라인</p><span class="hex">#1B365D</span></div></div>
-      <div class="swatch"><div class="chip" style="background:#2D5A8A"></div><div class="info"><p class="name">Ink Light</p><p class="role">다크 표면 위 링크 · 밝은 변형</p><span class="hex">#2D5A8A</span></div></div>
-      <div class="swatch"><div class="chip" style="background:#30302e"></div><div class="info"><p class="name" style="color:var(--deep-dark)">Dark Surface</p><p class="role">다크 테마 컨테이너 · 웜 차콜</p><span class="hex">#30302E</span></div></div>
-      <div class="swatch"><div class="chip" style="background:#b53333"></div><div class="info"><p class="name">Error</p><p class="role">오류 상태, 깊은 따뜻한 레드</p><span class="hex">#B53333</span></div></div>
+      <div class="swatch brand"><div class="chip" style="background:#1B365D"></div><div class="info"><p class="name">Ink Blue</p><p class="role">Primary color · CTA · labels · section overline</p><span class="hex">#1B365D</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#2D5A8A"></div><div class="info"><p class="name">Ink Light</p><p class="role">Links on dark surfaces · lighter variant</p><span class="hex">#2D5A8A</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#30302e"></div><div class="info"><p class="name" style="color:var(--deep-dark)">Dark Surface</p><p class="role">Dark theme container · warm charcoal</p><span class="hex">#30302E</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#b53333"></div><div class="info"><p class="name">Error</p><p class="role">Error state, deep warm red</p><span class="hex">#B53333</span></div></div>
     </div>
 
     <h3 class="subhead">Warm Neutrals</h3>
@@ -342,11 +353,11 @@ npx skills add tw93/kami/plugins/kami -a claude-code codex cursor -g -y
       <div class="swatch"><div class="chip" style="background:#6b6a64"></div><div class="info"><p class="name">Stone</p><span class="hex">#6b6a64</span></div></div>
     </div>
 
-    <h3 class="subhead">태그 배경색</h3>
-    <p style="font-size:14px; color: var(--olive); margin: 0 0 16px; line-height: 1.55;">등록된 솔리드 색상은 두 단계만 사용합니다. <code style="font-family:var(--mono);font-size:12px;background:#EEF2F7;color:var(--brand);padding:1px 5px;border-radius:2px">#EEF2F7</code>은 약한 표현, <code style="font-family:var(--mono);font-size:12px;background:#E4ECF5;color:var(--brand);padding:1px 5px;border-radius:2px">#E4ECF5</code>는 기본값입니다. 솔리드 hex는 WeasyPrint의 이중 사각형 문제도 막습니다.</p>
+    <h3 class="subhead">Tag Tints</h3>
+    <p style="font-size:14px; color: var(--olive); margin: 0 0 16px; line-height: 1.55;">Use one of two registered solid tints. <code style="font-family:var(--mono);font-size:12px;background:#EEF2F7;color:var(--brand);padding:1px 5px;border-radius:2px">#EEF2F7</code> recedes; <code style="font-family:var(--mono);font-size:12px;background:#E4ECF5;color:var(--brand);padding:1px 5px;border-radius:2px">#E4ECF5</code> is the default. Solid hex avoids WeasyPrint's double-rectangle rendering bug.</p>
     <div class="tint-strip">
       <div class="tint"><span class="flag">Recede</span><span class="sample" style="background:#EEF2F7">Tag sample</span><p class="opacity">Quiet</p><span class="hex">#EEF2F7</span></div>
-      <div class="tint default"><span class="flag">Default</span><span class="sample" style="background:#E4ECF5">Tag sample</span><p class="opacity">기본</p><span class="hex">#E4ECF5</span></div>
+      <div class="tint default"><span class="flag">Default</span><span class="sample" style="background:#E4ECF5">Tag sample</span><p class="opacity">Default</p><span class="hex">#E4ECF5</span></div>
     </div>
   </section>
 
@@ -354,30 +365,30 @@ npx skills add tw93/kami/plugins/kami -a claude-code codex cursor -g -y
   <section>
     <div class="section-head">
       <p class="section-num">04 · Typography</p>
-      <h2 class="section-title">타입 시스템</h2>
-      <p class="section-lede">하나의 세리프가 계층과 본문을 함께 맡고, 모노는 코드와 기술 레이블에만 사용합니다.</p>
+      <h2 class="section-title">Type System</h2>
+      <p class="section-lede">One serif family carries hierarchy and body; mono is reserved for code and technical labels.</p>
     </div>
 
     <div class="family-grid">
       <div class="family serif">
         <p class="glyph">Aa</p>
-        <p class="role">Serif · 제목 + 본문</p>
+        <p class="role">Serif · Headlines + Body</p>
         <p class="name">Charter / TsangerJinKai02</p>
-        <p class="use">제목, 본문, 풀 인용, 숫자 강조에 사용됩니다. 영문은 Charter, 중문은 TsangerJinKai02를 사용합니다.</p>
+        <p class="use">Used for headlines, body text, pull quotes, and numeric emphasis. English uses Charter, Chinese uses TsangerJinKai02.</p>
       </div>
       <div class="family mono">
         <p class="glyph">&lt;/&gt;</p>
-        <p class="role">Mono · 코드</p>
+        <p class="role">Mono · Code</p>
         <p class="name">JetBrains Mono</p>
-        <p class="use">코드 블록, 버전 번호, hex 값, 표형 숫자.</p>
+        <p class="use">Code blocks, version numbers, hex values, tabular figures.</p>
       </div>
     </div>
 
-    <h3 class="subhead">스케일 (인쇄 pt; 화면 px = pt x 1.33)</h3>
+    <h3 class="subhead">Scale (print pt; screen px = pt x 1.33)</h3>
     <div class="type-grid">
       <div class="type-row">
         <div class="type-label">Display</div>
-        <div class="type-sample display">좋은 문서는 명확하고<br>안정적이며 절제되어 있다</div>
+        <div class="type-sample display">Good docs read<br>clear, stable, poised</div>
         <div class="type-specs"><b>36-48 pt</b><br>weight 500<br>line 1.10</div>
       </div>
       <div class="type-row">
@@ -397,12 +408,12 @@ npx skills add tw93/kami/plugins/kami -a claude-code codex cursor -g -y
       </div>
       <div class="type-row">
         <div class="type-label">Body</div>
-        <div class="type-sample body">잉크 블루는 어떤 페이지에서든 5% 이하만 차지합니다. 그 이상은 절제가 아니라 혼잡입니다. 모든 회색은 황갈색 기반입니다: R ≈ G > B가 기본 원칙입니다.</div>
+        <div class="type-sample body">Ink blue covers no more than 5% of any page. Beyond that is clutter, not restraint. All grays have a yellow-brown undertone: R ≈ G > B is the rule of thumb.</div>
         <div class="type-specs"><b>9.5-10 pt</b><br>weight 400<br>line 1.55</div>
       </div>
       <div class="type-row">
         <div class="type-label">Caption</div>
-        <div class="type-sample caption">그림 주석, 각주, 주석 텍스트. 색상은 올리브 또는 스톤으로 낮아집니다.</div>
+        <div class="type-sample caption">Figure notes, footnotes, annotation text. Color drops to olive or stone.</div>
         <div class="type-specs"><b>8.5-9 pt</b><br>weight 400<br>line 1.45</div>
       </div>
       <div class="type-row">
@@ -417,44 +428,44 @@ npx skills add tw93/kami/plugins/kami -a claude-code codex cursor -g -y
   <section>
     <div class="section-head">
       <p class="section-num">05 · Spacing &amp; Shape</p>
-      <h2 class="section-title">리듬과 형태</h2>
-      <p class="section-lede">기본 단위: 4pt. 밀집 레이아웃은 더 작은 여백을, 격식 있는 문서는 더 큰 여백을 사용합니다.</p>
+      <h2 class="section-title">Rhythm &amp; Form</h2>
+      <p class="section-lede">Base unit: 4pt. Denser layouts get smaller margins; more formal documents get larger ones.</p>
     </div>
 
     <table class="space-table">
-      <tr><th>스케일</th><th>값</th><th>용도</th><th></th></tr>
-      <tr><td class="name">xs</td><td class="val">2-3 pt</td><td class="use">인라인 요소</td><td class="bar"><span style="width:6px"></span></td></tr>
-      <tr><td class="name">sm</td><td class="val">4-5 pt</td><td class="use">태그 패딩 · 타이트 레이아웃</td><td class="bar"><span style="width:12px"></span></td></tr>
-      <tr><td class="name">md</td><td class="val">8-10 pt</td><td class="use">컴포넌트 내부</td><td class="bar"><span style="width:24px"></span></td></tr>
-      <tr><td class="name">lg</td><td class="val">16-20 pt</td><td class="use">컴포넌트 간격 · 카드 패딩</td><td class="bar"><span style="width:48px"></span></td></tr>
-      <tr><td class="name">xl</td><td class="val">24-32 pt</td><td class="use">섹션 제목 마진</td><td class="bar"><span style="width:72px"></span></td></tr>
-      <tr><td class="name">2xl</td><td class="val">40-60 pt</td><td class="use">주요 섹션 간격</td><td class="bar"><span style="width:140px"></span></td></tr>
-      <tr><td class="name">3xl</td><td class="val">80-120 pt</td><td class="use">긴 문서 챕터 간격</td><td class="bar"><span style="width:240px"></span></td></tr>
+      <tr><th>Scale</th><th>Value</th><th>Use</th><th></th></tr>
+      <tr><td class="name">xs</td><td class="val">2-3 pt</td><td class="use">Inline elements</td><td class="bar"><span style="width:6px"></span></td></tr>
+      <tr><td class="name">sm</td><td class="val">4-5 pt</td><td class="use">Tag padding · tight layout</td><td class="bar"><span style="width:12px"></span></td></tr>
+      <tr><td class="name">md</td><td class="val">8-10 pt</td><td class="use">Component internals</td><td class="bar"><span style="width:24px"></span></td></tr>
+      <tr><td class="name">lg</td><td class="val">16-20 pt</td><td class="use">Between components · card padding</td><td class="bar"><span style="width:48px"></span></td></tr>
+      <tr><td class="name">xl</td><td class="val">24-32 pt</td><td class="use">Section title margins</td><td class="bar"><span style="width:72px"></span></td></tr>
+      <tr><td class="name">2xl</td><td class="val">40-60 pt</td><td class="use">Between major sections</td><td class="bar"><span style="width:140px"></span></td></tr>
+      <tr><td class="name">3xl</td><td class="val">80-120 pt</td><td class="use">Between long-doc chapters</td><td class="bar"><span style="width:240px"></span></td></tr>
     </table>
 
     <h3 class="subhead">Radii</h3>
     <div class="radii">
-      <div class="radius"><div class="box" style="border-radius:2pt"></div><div class="r"><b>2</b> pt</div><div class="label">인쇄 태그</div></div>
-      <div class="radius"><div class="box" style="border-radius:4pt"></div><div class="r"><b>4</b> pt</div><div class="label">인쇄 블록</div></div>
-      <div class="radius"><div class="box" style="border-radius:8px"></div><div class="r"><b>8</b> px</div><div class="label">화면 블록</div></div>
+      <div class="radius"><div class="box" style="border-radius:2pt"></div><div class="r"><b>2</b> pt</div><div class="label">Print chip</div></div>
+      <div class="radius"><div class="box" style="border-radius:4pt"></div><div class="r"><b>4</b> pt</div><div class="label">Print block</div></div>
+      <div class="radius"><div class="box" style="border-radius:8px"></div><div class="r"><b>8</b> px</div><div class="label">Screen block</div></div>
     </div>
 
-    <h3 class="subhead">깊이</h3>
-    <p style="font-size:14px; color: var(--olive); margin: 0; line-height: 1.55;">표면은 기본적으로 평평합니다. 여백, 하나의 조용한 채움, 꼭 필요한 중성 헤어라인으로 계층을 만듭니다. 아주 옅은 그림자는 실제로 떠 있는 스크린샷이나 팝오버에만 사용합니다.</p>
+    <h3 class="subhead">Depth</h3>
+    <p style="font-size:14px; color: var(--olive); margin: 0; line-height: 1.55;">Flat is the default. Use whitespace, one quiet fill, or one neutral hairline. Reserve a whisper shadow for a real screenshot, popover, or other surface that actually floats.</p>
   </section>
 
   <!-- ============ 06 COMPONENTS ============ -->
   <section>
     <div class="section-head">
       <p class="section-num">06 · Components</p>
-      <h2 class="section-title">원자 모듈</h2>
-      <p class="section-lede">작은 고정 세트로, 구체적인 문서 문제를 해결하는 곳에만 유지합니다.</p>
+      <h2 class="section-title">Atomic Modules</h2>
+      <p class="section-lede">A small fixed set, kept only where it solves a concrete document problem.</p>
     </div>
 
     <div class="comp-grid">
       <div class="comp">
-        <h3>버튼</h3>
-        <p class="hint">채움 + 테두리 · 그림자 없음 · 8px radius</p>
+        <h3>Buttons</h3>
+        <p class="hint">fill + border · no shadow · 8px radius</p>
         <div class="demo" style="display:flex; gap:10px; flex-wrap:wrap;">
           <span class="btn btn-primary">Primary CTA</span>
           <span class="btn btn-secondary">Secondary</span>
@@ -462,45 +473,45 @@ npx skills add tw93/kami/plugins/kami -a claude-code codex cursor -g -y
         </div>
       </div>
       <div class="comp">
-        <h3>태그, 두 단계</h3>
-        <p class="hint">솔리드 hex · 약한 표현 또는 기본</p>
+        <h3>Tags, two levels</h3>
+        <p class="hint">solid hex · receded or default</p>
         <div class="demo" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-          <span class="tag calm">약한 채움</span>
-          <span class="tag standard">기본 태그</span>
+          <span class="tag calm">Quiet fill</span>
+          <span class="tag standard">Default tag</span>
         </div>
       </div>
       <div class="comp">
-        <h3>인용</h3>
-        <p class="hint">olive 텍스트 + 이탤릭 · 측면 선 없음</p>
-        <blockquote class="quote">천 번의 거절 끝에 하나의 승낙, 장식보다 명확함을 우선합니다.</blockquote>
+        <h3>Quote</h3>
+        <p class="hint">olive text + italic · no side rule</p>
+        <blockquote class="quote">A thousand no's for every yes, prefer clarity over decoration.</blockquote>
       </div>
       <div class="comp">
-        <h3>메트릭</h3>
-        <p class="hint">세리프 숫자 + 산세리프 레이블 · tabular-nums</p>
+        <h3>Metric</h3>
+        <p class="hint">serif number + sans label · tabular-nums</p>
         <div class="metrics demo">
-          <div class="metric"><span class="metric-value">8</span><span class="metric-label">문서 유형</span></div>
-          <div class="metric"><span class="metric-value">1</span><span class="metric-label">강조색</span></div>
-          <div class="metric"><span class="metric-value">8</span><span class="metric-label">규칙</span></div>
+          <div class="metric"><span class="metric-value">8</span><span class="metric-label">Doc types</span></div>
+          <div class="metric"><span class="metric-value">1</span><span class="metric-label">Accent</span></div>
+          <div class="metric"><span class="metric-value">8</span><span class="metric-label">Rules</span></div>
         </div>
       </div>
       <div class="comp">
-        <h3>섹션 제목</h3>
-        <p class="hint">serif 500 · 15pt · 크기 주도 계층, 장식 없음</p>
+        <h3>Section Title</h3>
+        <p class="hint">serif 500 · 15pt · size-led hierarchy, no decoration</p>
         <div class="demo">
           <span class="sample-section-title">Selected Works · Projects</span>
         </div>
       </div>
       <div class="comp">
-        <h3>일반 목록</h3>
-        <p class="hint">간격으로 리듬 형성 · 기호 없음</p>
+        <h3>Plain List</h3>
+        <p class="hint">spacing carries rhythm · no marker</p>
         <ul class="plain-list demo">
-          <li>따뜻한 양피지, 순백은 절대 아님</li>
-          <li>잉크 블루 강조색, 두 번째 색상 없음</li>
-          <li>세리프가 권위를 담당</li>
+          <li>Warm parchment, never pure white</li>
+          <li>Ink blue accent, no second color</li>
+          <li>Serif carries authority</li>
         </ul>
       </div>
       <div class="comp">
-        <h3>코드 블록</h3>
+        <h3>Code Block</h3>
         <p class="hint">ivory bg + 4pt radius, no border</p>
 <pre class="code"><span class="c">// warmth from restraint, not from color</span>
 canvas   = parchment; accent = <span class="k">ink_blue</span>
@@ -509,11 +520,11 @@ document = <span class="k">serif</span> × hierarchy + generous_space
 beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
       </div>
       <div class="comp">
-        <h3>조용한 카드</h3>
-        <p class="hint">ivory 채움 하나 + 8px radius · 테두리와 그림자 없음</p>
+        <h3>Quiet Card</h3>
+        <p class="hint">one ivory fill + 8px radius · no border or shadow</p>
         <div class="demo" style="background:var(--ivory); border-radius:8px; padding:18px 20px;">
           <p style="font-family:var(--serif); font-weight:500; font-size:15px; margin:0 0 6px; color:var(--near-black);">Tesla Company Profile · One-Pager</p>
-          <p style="font-size:12px; color:var(--olive); margin:0 0 10px; line-height:1.5;">단일 A4 페이지 · 메트릭 카드 4개 + 본문 섹션 3개 + 타임라인</p>
+          <p style="font-size:12px; color:var(--olive); margin:0 0 10px; line-height:1.5;">Single A4 page · 4 metric cards + 3 body sections + timeline</p>
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <span class="tag calm">English</span>
             <span class="tag calm">A4 x 1</span>
@@ -528,8 +539,8 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
   <section>
     <div class="section-head">
       <p class="section-num">07 · Diagrams</p>
-      <h2 class="section-title">인라인 차트</h2>
-      <p class="section-lede">아키텍처, 프로세스, 데이터 차트 시나리오를 아우르는 18가지 인라인 SVG 다이어그램 유형. Claude에게 필요한 유형을 말하면 문서에 직접 삽입되며, 색상과 폰트는 Kami 디자인 언어를 따릅니다.</p>
+      <h2 class="section-title">Inline Charts</h2>
+      <p class="section-lede">Eighteen inline SVG diagram types covering architecture, process, and data chart scenarios. Tell Claude which type you need and it embeds directly into the document, colors and fonts following the Kami design language.</p>
     </div>
     <div class="chart-showcase">
       <!-- Architecture mini -->
@@ -554,7 +565,7 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
           <text x="228" y="76" text-anchor="middle" font-size="7" letter-spacing="0.5" fill="#6b6a64">DATA</text>
           <text x="228" y="91" text-anchor="middle" font-size="9" font-weight="600" fill="#141413">Database</text>
         </svg>
-        <p class="chart-caption">시스템 구성 요소와 연결, 하나의 포컬 노드</p>
+        <p class="chart-caption">System components and connections, one focal node</p>
       </div>
       <!-- Flowchart mini -->
       <div class="chart-card">
@@ -578,7 +589,7 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
           <rect x="96" y="116" width="88" height="32" rx="4" fill="#f5f4ed" stroke="#6b6a64" stroke-width="0.8"/>
           <text x="140" y="134" text-anchor="middle" font-size="9" fill="#504e49">Reject</text>
         </svg>
-        <p class="chart-caption">분기 결정, 예/아니오 경로, 성공에 포컬</p>
+        <p class="chart-caption">Decision branches, yes/no paths, focal on success</p>
       </div>
       <!-- Bar chart (shifted left) -->
       <div class="chart-card">
@@ -598,7 +609,7 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
           <text x="159" y="39" text-anchor="middle" font-size="9" font-weight="600" fill="#2d4e7a">195</text>
           <text x="219" y="25" text-anchor="middle" font-size="9" font-weight="600" fill="#1B365D">240</text>
         </svg>
-        <p class="chart-caption">분기별 매출 비교, 그라데이션 또는 단색</p>
+        <p class="chart-caption">Quarterly revenue comparison, gradient or single color</p>
       </div>
       <!-- Donut chart -->
       <div class="chart-card">
@@ -617,7 +628,7 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
           <rect x="150" y="98" width="10" height="10" rx="2" fill="#6b6a64"/>
           <text x="165" y="107" font-size="11" fill="#4d4c48">Other · 15%</text>
         </svg>
-        <p class="chart-caption">매출 구조 분석, 3-6개 세그먼트 지원</p>
+        <p class="chart-caption">Revenue structure breakdown, supports 3–6 segments</p>
       </div>
     </div>
   </section>
@@ -626,22 +637,22 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
   <section>
     <div class="section-head">
       <p class="section-num">08 · Decision Lookup</p>
-      <h2 class="section-title">빠른 참조</h2>
-      <p class="section-lede">무엇을 사용해야 할지 확신이 없을 때 이 표를 참고하세요. 여기에 없다면, 기본 원칙으로 돌아가세요.</p>
+      <h2 class="section-title">Quick Reference</h2>
+      <p class="section-lede">When in doubt about what to use, consult this table. If it's not here, go back to first principles.</p>
     </div>
     <table class="decision">
-      <tr><th>작업</th><th>방법</th></tr>
-      <tr><td class="task">큰 제목</td><td class="how">serif <code>500</code>, 계층에 따른 크기, line-height <code>1.10-1.30</code></td></tr>
-      <tr><td class="task">읽기 본문</td><td class="how">serif <code>400</code>, <code>9.5-10 pt</code>, line-height <code>1.55</code></td></tr>
-      <tr><td class="task">숫자 강조</td><td class="how"><code>color: var(--brand)</code>, 볼드 아님</td></tr>
-      <tr><td class="task">두 섹션 구분</td><td class="how">먼저 여백을 사용하고, 경계가 꼭 명확해야 할 때만 <code>0.5pt</code> 중성 전체 너비 헤어라인</td></tr>
-      <tr><td class="task">인용</td><td class="how">olive 텍스트 + 이탤릭 또는 들여쓰기, 측면 선 없음</td></tr>
-      <tr><td class="task">코드 표시</td><td class="how">Ivory bg + <code>4pt</code> radius + mono font, no border</td></tr>
-      <tr><td class="task">기본 vs 보조</td><td class="how">기본: brand fill + ivory text; 보조: warm-sand + charcoal</td></tr>
-      <tr><td class="task">특별 카드 표시</td><td class="how">더 명확한 레이블이나 하나의 조용한 채움을 사용하고 강조 테두리는 추가하지 않음</td></tr>
-      <tr><td class="task">섹션 시작</td><td class="how">Serif <code>500</code> · <code>15pt</code> · 크기 주도 계층, 장식 불필요</td></tr>
-      <tr><td class="task">문서 표지</td><td class="how">단일 페이지, Display 크기 + 우측 정렬 저자/날짜 + 넉넉한 여백</td></tr>
-      <tr><td class="task">핵심 수치 표시</td><td class="how">베이스라인 한 줄, 투명 배경, 컨테이너 없음 + serif 큰 숫자 + sans 작은 레이블</td></tr>
+      <tr><th>Task</th><th>How</th></tr>
+      <tr><td class="task">Large headline</td><td class="how">serif <code>500</code>, size by hierarchy, line-height <code>1.10-1.30</code></td></tr>
+      <tr><td class="task">Reading body</td><td class="how">serif <code>400</code>, <code>9.5-10 pt</code>, line-height <code>1.55</code></td></tr>
+      <tr><td class="task">Emphasize a number</td><td class="how"><code>color: var(--brand)</code>, not bold</td></tr>
+      <tr><td class="task">Separate two sections</td><td class="how">Whitespace first; one <code>0.5pt</code> neutral full-width hairline only when the boundary must be explicit</td></tr>
+      <tr><td class="task">Quote someone</td><td class="how">Olive text + italic or indentation; no side rule</td></tr>
+      <tr><td class="task">Show code</td><td class="how">Ivory bg + <code>4pt</code> radius + mono font, no border</td></tr>
+      <tr><td class="task">Primary vs secondary</td><td class="how">Primary: brand fill + ivory text; Secondary: warm-sand + charcoal</td></tr>
+      <tr><td class="task">Mark a special card</td><td class="how">Use a stronger label or one quiet fill; do not add an accent edge</td></tr>
+      <tr><td class="task">Begin a section</td><td class="how">Serif <code>500</code> · <code>15pt</code> · size-led hierarchy, no decoration needed</td></tr>
+      <tr><td class="task">Document cover</td><td class="how">Single page, Display size + right-aligned author/date + generous whitespace</td></tr>
+      <tr><td class="task">Show key figures</td><td class="how">Baseline row, transparent, no container + serif number, ink blue + sans label</td></tr>
     </table>
   </section>
 
@@ -649,37 +660,37 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
   <section>
     <div class="section-head">
       <p class="section-num">09 · Anti-Patterns</p>
-      <h2 class="section-title">피해야 할 것</h2>
-      <p class="section-lede">예외는 허용되지만, 이유는 명시적이어야 합니다.</p>
+      <h2 class="section-title">What to Avoid</h2>
+      <p class="section-lede">Exceptions are allowed, but the reason should be explicit.</p>
     </div>
 
     <div class="anti">
       <div class="anti-row">
-        <p class="anti-topic">페이지 배경</p>
+        <p class="anti-topic">Page canvas</p>
         <div class="anti-pair">
-          <p class="anti-line never"><span class="cue">지양</span><span><code>#ffffff</code> 순백이나 <code>#f3f4f6</code> 쿨 그레이 배경. 페이지가 딱딱해지고 따뜻한 양피지 특성이 약해집니다.</span></p>
-          <p class="anti-line instead"><span class="cue">권장</span><span>항상 <code>#f5f4ed</code> 양피지. 인쇄 시 흰 테두리를 막기 위해 <code>@page background</code>도 같은 색으로 설정합니다.</span></p>
+          <p class="anti-line never"><span class="cue">Never</span><span>Pure white <code>#ffffff</code> or cool gray <code>#f3f4f6</code> as page background. It makes the page feel brittle and weakens the warm parchment character.</span></p>
+          <p class="anti-line instead"><span class="cue">Instead</span><span>Always <code>#f5f4ed</code> parchment, with <code>@page background</code> set to the same color to avoid white edges when printing.</span></p>
         </div>
       </div>
       <div class="anti-row">
-        <p class="anti-topic">태그 색상</p>
+        <p class="anti-topic">Tag tints</p>
         <div class="anti-pair">
-          <p class="anti-line never"><span class="cue">지양</span><span>태그의 <code>rgba(27,54,93,0.18)</code>. WeasyPrint는 패딩과 글리프 영역을 다른 불투명도로 렌더링하여 이중 사각형을 만듭니다.</span></p>
-          <p class="anti-line instead"><span class="cue">권장</span><span>등록된 기본 태그 색상 <code>#E4ECF5</code>. 렌더링이 깔끔하게 유지되고 색상이 안정적입니다.</span></p>
+          <p class="anti-line never"><span class="cue">Never</span><span><code>rgba(27,54,93,0.18)</code> for tags. WeasyPrint renders padding and glyph areas at different opacity, creating double rectangles.</span></p>
+          <p class="anti-line instead"><span class="cue">Instead</span><span>Use the registered default tag token <code>#E4ECF5</code>. The rendering stays clean and the color remains stable.</span></p>
         </div>
       </div>
       <div class="anti-row">
-        <p class="anti-topic">합성 볼드</p>
+        <p class="anti-topic">Synthetic bold</p>
         <div class="anti-pair">
-          <p class="anti-line never"><span class="cue">지양</span><span><code>font-weight: 600</code> 이상의 합성 볼드 제목. 획이 흐려지고 타이포그래피 품질이 떨어집니다.</span></p>
-          <p class="anti-line instead"><span class="cue">권장</span><span>본문 400, 제목 500 (실제 W05). 더 강한 존재감이 필요하면 크기, 여백, 잉크 블루 텍스트를 사용합니다.</span></p>
+          <p class="anti-line never"><span class="cue">Never</span><span>Headlines at <code>font-weight: 600</code> or heavier synthetic bold. It blurs strokes and degrades typographic quality.</span></p>
+          <p class="anti-line instead"><span class="cue">Instead</span><span>Body 400, headings 500 (real W05). For more presence, use size, spacing, or ink-blue text, never synthetic bold.</span></p>
         </div>
       </div>
       <div class="anti-row">
-        <p class="anti-topic">섀도우</p>
+        <p class="anti-topic">Shadows</p>
         <div class="anti-pair">
-          <p class="anti-line never"><span class="cue">지양</span><span>하드 드롭 섀도우 <code>0 2px 8px rgba(0,0,0,0.3)</code>. 시각적으로 무겁고 인쇄 시 어두운 얼룩으로 나타납니다.</span></p>
-          <p class="anti-line instead"><span class="cue">권장</span><span>표면은 기본적으로 평평하게 두고 여백, 조용한 채움, 중성 헤어라인으로 계층을 만듭니다. 아주 옅은 그림자는 실제로 떠 있는 UI와 스크린샷에만 사용합니다.</span></p>
+          <p class="anti-line never"><span class="cue">Never</span><span>Hard drop shadow <code>0 2px 8px rgba(0,0,0,0.3)</code>. Visually heavy and likely to print as dark blobs.</span></p>
+          <p class="anti-line instead"><span class="cue">Instead</span><span>Keep the surface flat. Use whitespace, one quiet fill, or a neutral hairline; reserve a whisper shadow for real floating UI or screenshots.</span></p>
         </div>
       </div>
     </div>
@@ -689,11 +700,11 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
   <section>
     <div class="section-head">
       <p class="section-num">10 · Background</p>
-      <h2 class="section-title">디자인 기원</h2>
+      <h2 class="section-title">Design Origins</h2>
     </div>
     <div class="background-text">
-      <p>저는 미국 주식에 투자하며 항상 Claude에게 리서치 리포트를 작성해 달라고 합니다. 매번 출력물은 같은 기본 문서 모양이었습니다: 회색이고, 평면적이며, 세션마다 레이아웃이 달랐습니다. 구조를 파악하기 어렵고, 서식은 구식이었으며, 페이지의 어떤 것도 계속 읽고 싶게 만들지 못했습니다. 그래서 타이포그래피, 팔레트, 간격을 하나의 규칙씩 고쳐나가기 시작했고, 결국 리포트는 제가 실제로 즐길 수 있는 페이지가 되었습니다.</p>
-      <p>나중에 "당신이 모르는 에이전트: 원칙, 아키텍처, 엔지니어링 실무"를 발표해야 했습니다. 이미 문서가 있었고 슬라이드를 처음부터 만들고 싶지 않아서, Claude Design으로 제 스타일에 맞게 레이아웃을 잡고 여러 차례 수정하여 만족스러운 수준에 도달했습니다. 그 과정에서 인라인 SVG 차트, 통일된 웜 팔레트, 더 타이트한 에디토리얼 리듬이 추가되었습니다. 정기적으로 작성하는 모든 문서를 커버할 때까지 계속 성장했고, 추상화 과정을 거쳐 kami가 되었습니다: 어떤 에이전트에게든 넘겨주고 출력물을 신뢰할 수 있는, 하나의 조용한 디자인 시스템입니다.</p>
+      <p>I like investing in US equities and ask Claude to write research reports all the time. Every output landed in the same default-doc look: gray, flat, a different layout each session. The structure was hard to scan, the formatting felt dated, and nothing about the page made me want to keep reading. So I started fixing the typography, the palette, the spacing, one rule at a time, until the report became a page I actually enjoyed.</p>
+      <p>Later I needed to present "The Agent You Don't Know: Principles, Architecture and Engineering Practice." I already had the document and didn't want to build slides from scratch, so I used Claude Design to lay it out in my own style, tweaked it round after round, and eventually got it to a place I was happy with. That process added inline SVG charts, a unified warm palette, and a tighter editorial rhythm. It kept growing until it covered every document I regularly ship, so I kept abstracting the process, and it became kami: one quiet design system I can hand to any agent and trust the output.</p>
     </div>
   </section>
 
@@ -705,20 +716,20 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
     </div>
     <dl class="faq">
       <div class="faq-pair">
-        <dt>Kami란 무엇인가요?</dt>
-        <dd>Kami는 하나의 강조색, 세리프 중심 위계, 따뜻한 양피지 캔버스로 AI 생성 문서에 일관된 편집 언어를 부여하고 Claude Design이나 GPT Canvas 같은 이미지 렌더러용 비주얼 브리프로도 쓸 수 있는 디자인 시스템입니다.</dd>
+        <dt>What is Kami?</dt>
+        <dd>Kami is a constraint-based design system that gives AI-generated documents a consistent editorial language through one accent color, serif-led hierarchy, and a warm parchment canvas, and can also guide image renderers such as Claude Design or GPT Canvas.</dd>
       </div>
       <div class="faq-pair">
-        <dt>무엇을 만들 수 있나요?</dt>
-        <dd>Kami는 8가지 문서 템플릿, 다국어 랜딩 페이지 시스템, 18가지 인라인 SVG 다이어그램을 제공하며 문서는 PDF나 PNG로 내보낼 수 있고 슬라이드는 편집 가능한 PPTX도 지원합니다.</dd>
+        <dt>What can it produce?</dt>
+        <dd>Kami includes eight document templates, a multilingual landing-page system, and 18 inline SVG diagram types. Documents export to PDF or PNG, and slides also have an editable PPTX path.</dd>
       </div>
       <div class="faq-pair">
-        <dt>브랜드 스타일에 맞출 수 있나요?</dt>
-        <dd>네, 브랜드 색상, 글꼴, 레이아웃 선호를 에이전트에게 알려 주거나 브랜드 설정을 제공하면 명시한 요청이 항상 Kami 기본값보다 우선합니다.</dd>
+        <dt>Can Kami match my brand?</dt>
+        <dd>Yes, share your brand colors, fonts, and layout preferences or provide a brand profile, and your brief will override Kami's defaults.</dd>
       </div>
       <div class="faq-pair">
-        <dt>어떤 언어를 지원하나요?</dt>
-        <dd>영어, 중국어, 일본어, 한국어를 지원하며 각각 Charter, TsangerJinKai02, YuMincho, Source Han Serif K를 사용해 자간, 행간, 글꼴 크기를 조정하고 일본어와 한국어는 best-effort CJK 경로로 지원해 배포 전 비주얼 QA를 거칩니다.</dd>
+        <dt>What languages does it support?</dt>
+        <dd>Kami supports English, Chinese, Japanese, and Korean with Charter, TsangerJinKai02, YuMincho, and Source Han Serif K respectively, plus per-language tuning for spacing, line height, and type size, while Japanese and Korean remain best-effort CJK paths with visual QA before delivery.</dd>
       </div>
     </dl>
   </section>
@@ -733,14 +744,14 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
       </svg>
       <div>
         <p class="wm-name">Kami · 紙</p>
-        <p class="wm-sub">좋은 콘텐츠는 좋은 종이를 만날 자격이 있습니다.</p>
+        <p class="wm-sub">Good content deserves good paper.</p>
       </div>
     </div>
     <div class="colophon">
-      <div class="footer-links"><a href="./developers" style="color:var(--brand); text-decoration:none; font-weight:500;">개발자</a><a href="./about" style="color:var(--brand); text-decoration:none; font-weight:500;">소개</a><a href="./contact" style="color:var(--brand); text-decoration:none; font-weight:500;">문의</a><a href="./privacy" style="color:var(--brand); text-decoration:none; font-weight:500;">개인정보</a><a href="https://github.com/tw93/kami" style="color:var(--brand); text-decoration:none; font-weight:500;">GitHub</a></div>
+      <div class="footer-links"><a href="./developers" style="color:var(--brand); text-decoration:none; font-weight:500;">Developers</a><a href="./about" style="color:var(--brand); text-decoration:none; font-weight:500;">About</a><a href="./contact" style="color:var(--brand); text-decoration:none; font-weight:500;">Contact</a><a href="./privacy" style="color:var(--brand); text-decoration:none; font-weight:500;">Privacy</a><a href="https://github.com/tw93/kami" style="color:var(--brand); text-decoration:none; font-weight:500;">GitHub</a></div>
       <div style="margin-top:6px;">One-Pager · Long Doc · Letter · Portfolio · Resume · Slides</div>
       <div style="margin-top:8px; color: var(--olive); font-family: var(--serif);">
-        Serif는 권위를, sans는 기능을, 따뜻한 회색은 리듬을, 잉크 블루는 초점을 담당합니다.
+        Serif carries authority, sans function, warm grays rhythm, ink blue focus.
       </div>
     </div>
   </footer>

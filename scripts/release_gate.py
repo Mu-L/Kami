@@ -135,7 +135,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     try:
-        version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+        version = (ROOT / "skills" / "kami" / "VERSION").read_text(encoding="utf-8").strip()
         head_sha = _git("rev-parse", "HEAD")
         tag_sha = resolve_tag_commit(args.tag)
     except (OSError, RuntimeError) as exc:

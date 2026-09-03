@@ -16,8 +16,7 @@ assets/fonts/*.otf
 assets/examples/
 
 /tmp/
-/dist/*
-!/dist/kami.zip
+/dist/
 *.log
 .vercel
 

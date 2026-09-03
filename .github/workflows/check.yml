@@ -22,7 +22,7 @@ jobs:
         run: python3 -m pip install Pygments
 
       - name: Lint templates and check token sync
-        run: python3 scripts/build.py --check
+        run: python3 skills/kami/scripts/build.py --check
 
       - name: Check generated Codex plugin metadata
         run: python3 scripts/build_metadata.py --check
@@ -65,10 +65,10 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-          cache-dependency-path: scripts/mathjax-runtime/package-lock.json
+          cache-dependency-path: skills/kami/scripts/mathjax-runtime/package-lock.json
 
       - name: Install locked MathJax runtime
-        run: bash scripts/ensure_mathjax.sh
+        run: bash skills/kami/scripts/ensure_mathjax.sh
 
       - name: Run full test suite with render dependencies
         run: python3 scripts/tests/test_build.py
@@ -88,22 +88,22 @@ jobs:
           import subprocess
           import sys
 
-          sys.path.insert(0, "scripts")
+          sys.path.insert(0, "skills/kami/scripts")
           from shared import HTML_TEMPLATES
 
           for name, spec in HTML_TEMPLATES.items():
               if spec.build_max_pages:
                   subprocess.run(
-                      [sys.executable, "scripts/build.py", "--verify", name],
+                      [sys.executable, "skills/kami/scripts/build.py", "--verify", name],
                       check=True,
                   )
           PY
-          python3 scripts/build.py --verify slides
-          python3 scripts/build.py --verify slides-en
+          python3 skills/kami/scripts/build.py --verify slides
+          python3 skills/kami/scripts/build.py --verify slides-en
 
       - name: Check which family actually drew the CJK text
         # Page counts cannot see the typeface. With fonts-noto-cjk installed
         # this reports a serif fallback and passes; it fails if the CJK body
         # ever lands on a sans or gets split across two families, which is how
         # a broken font install would otherwise ship looking merely "fine".
-        run: python3 scripts/build.py --check-fonts assets/examples/one-pager.pdf assets/examples/one-pager-ko.pdf assets/examples/resume.pdf
+        run: python3 skills/kami/scripts/build.py --check-fonts skills/kami/assets/examples/one-pager.pdf skills/kami/assets/examples/one-pager-ko.pdf skills/kami/assets/examples/resume.pdf

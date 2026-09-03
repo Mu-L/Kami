@@ -22,10 +22,10 @@ codex plugin marketplace add tw93/kami
 codex plugin add kami@kami
 
 # Generic agents that read ~/.agents/
-npx skills add tw93/kami/plugins/kami -a claude-code codex cursor -g -y
+npx skills add tw93/kami -a claude-code codex cursor -g -y
 
 # MCP client, from a checkout
-claude mcp add kami -- python3 <checkout>/scripts/mcp_server.py
+claude mcp add kami -- python3 <checkout>/skills/kami/scripts/mcp_server.py
 ```
 
 Claude Desktop: download the release asset `kami.zip` from <https://github.com/tw93/kami/releases/latest/download/kami.zip>, not GitHub's Source code ZIP, then upload it under Customize > Skills.
